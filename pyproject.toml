@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "jidou_hikki"
+version = "0.1.0"
+description = ""
+authors = ["fariz.tumbuan <fariz.tumbuan@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+Django = "^3.2.4"
+SudachiPy = "^0.5.2"
+django-model-utils = "^4.1.1"
+jaconv = "^0.3"
+
+[tool.poetry.dev-dependencies]
+SudachiDict-core = "^20210608"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.dephell.main]    
+from = {format = "poetry", path = "pyproject.toml"}    
+to = {format = "setuppy", path = "setup.py"}

@@ -1,0 +1,22 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+
+<body>
+    (Notebook: <i>{{ page.notebook.title }}</i>)
+
+    <h1>{{ page.title }}</h1>
+    {{ page.html|safe }}
+    <hr>
+    <h3>Word lists</h3>
+    <ol>
+        {% for vocab in page.vocabularies.all %}
+        <li>{{ vocab.word }} ({{ vocab.reading_html }})</li>
+        {% endfor %}
+    </ol>
+    <hr>
+</body>
+
+</html>

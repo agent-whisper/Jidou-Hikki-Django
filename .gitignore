@@ -1,3 +1,9 @@
+.vscode
+tmp
+
+jh_server/apps/*/migrations/*.py
+!jh_server/apps/*/migrations/__init__.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
