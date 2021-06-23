@@ -2,18 +2,18 @@ from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import get_object_or_404
 
-from .models import NoteBook, NotePage, JidouHikkiUser
+from .models import Notebook, NotePage, JidouHikkiUser
 
 
 def notebooks(request):
-    notebooks = NoteBook.objects.all()
+    notebooks = Notebook.objects.all()
     template = loader.get_template("jidou_hikki/notebooks.html")
     context = {"notebooks": notebooks}
     return HttpResponse(template.render(context, request))
 
 
 def notebook_content(request, book_id):
-    book = get_object_or_404(NoteBook, id=book_id)
+    book = get_object_or_404(Notebook, id=book_id)
     template = loader.get_template("jidou_hikki/notebook_contents.html")
     context = {"book": book}
     return HttpResponse(template.render(context, request))

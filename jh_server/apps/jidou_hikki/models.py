@@ -98,7 +98,7 @@ class NotePage(TimeStampedModel):
     html = models.TextField()
     vocabularies = models.ManyToManyField(Vocabulary)
     notebook = models.ForeignKey(
-        "NoteBook", on_delete=models.CASCADE, related_name="pages"
+        "Notebook", on_delete=models.CASCADE, related_name="pages"
     )
 
     def __str__(self):
@@ -108,7 +108,7 @@ class NotePage(TimeStampedModel):
         unique_together = ("title", "notebook")
 
 
-class NoteBook(TimeStampedModel):
+class Notebook(TimeStampedModel):
     owner = models.ForeignKey(JidouHikkiUser, on_delete=models.CASCADE)
     title = models.TextField()
     description = models.TextField(default="")
