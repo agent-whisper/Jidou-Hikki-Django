@@ -14,7 +14,7 @@ MODE_C = tokenizer.Tokenizer.SplitMode.C
 
 
 class SudachiToken(Token):
-    _html_template = "<ruby data-word-id={word_id}><rb>{surface}</rb><rp>(</rp><rt>{furigana}</rt><rp>)</rp>{okurigana}</ruby>"
+    _html_template = "<span><ruby data-word-id={word_id}><rb>{surface}</rb><rp>(</rp><rt>{furigana}</rt><rp>)</rp></ruby>{okurigana}</span>"
 
     def __init__(self, morpheme: sudachipy.morpheme.Morpheme):
         self._token = morpheme

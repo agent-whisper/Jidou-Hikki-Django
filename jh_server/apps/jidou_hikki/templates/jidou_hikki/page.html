@@ -13,7 +13,7 @@
     <h3>Word lists</h3>
     <ol>
         {% for vocab in page.vocabularies.all %}
-        <li>{{ vocab.word }} ({{ vocab.reading_html }})</li>
+        <li><span><ruby>{{ vocab.kanji }} <rt>{{ vocab.furigana }}</rt></ruby>{{ vocab.okurigana }}</span></li>
         {% endfor %}
     </ol>
     <hr>

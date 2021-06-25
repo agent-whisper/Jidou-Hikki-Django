@@ -1,7 +1,8 @@
-<h1>{{ user.username }}'s Vocabularies</h1>
+<h1>{{ user.username }}'s Cards</h1>
 
 <ol>
     {% for card in user.cards.all %}
-    <li><ruby>{{ card.vocabulary.kanji }} <rt>{{ card.vocabulary.furigana }}</rt></ruby></li>
+    <li><span><ruby>{{ card.vocabulary.kanji }} <rt>{{ card.vocabulary.furigana }}</rt>
+            </ruby>{{card.vocabulary.okurigana }}</span></li>
     {% endfor %}
 </ol>
