@@ -3,9 +3,12 @@ from django.contrib.auth.models import AbstractUser
 from model_utils.choices import Choices
 from model_utils.models import TimeStampedModel
 
-from .utils.sudachi import Token, Tokenizer
+from .analyzer import get_tokenizer
+from .analyzer.base import Token
 
 MASTERY = Choices("new", "seen", "acquired")
+
+_tokenizer = get_tokenizer()
 
 
 class JidouHikkiUser(AbstractUser):
@@ -97,7 +100,7 @@ class NotePage(TimeStampedModel):
         vocabularies = []
         for line in lines:
             if line:
-                tokens = Tokenizer.from_text(line.strip())
+                tokens = _tokenizer.from_text(line.strip())
                 for tkn in tokens:
                     if tkn.contains_kanji():
                         vocab, _ = Vocabulary.objects.update_or_create_from_token(tkn)

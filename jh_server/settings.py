@@ -126,3 +126,5 @@ STATIC_URL = "/static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "jidou_hikki.JidouHikkiUser"
+
+TOKENIZER_CLASS = "jh_server.apps.jidou_hikki.analyzer.sudachi.SudachiTokenizer"
