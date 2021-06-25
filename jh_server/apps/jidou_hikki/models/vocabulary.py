@@ -2,6 +2,7 @@ import math
 from datetime import timedelta
 
 from django.db import models
+from django.db.models.query import QuerySet
 from django.utils import timezone
 from model_utils.models import TimeStampedModel
 from model_utils.choices import Choices
@@ -13,7 +14,7 @@ from ..analyzer.base import Token
 _TOKENIZER = get_tokenizer()
 _USER_MODEL = get_user_model()
 
-MASTERY = Choices("new", "learning", "retaining", "acquired")
+MASTERY = Choices("new", "learning", "acquired")
 
 
 def calc_repetition_interval(iteration: int, easiness_factor: float) -> int:
@@ -36,7 +37,32 @@ def calc_new_easiness_factor(old_ef: float, ans_quality: int) -> float:
     return ef
 
 
+class UserFlashCardManager(models.Manager):
+    def get_new_cards(self, limit: int = None) -> QuerySet:
+        """Query UserFlashCard with `new` mastery level, ordered by the created time.
+
+        :param limit: How many cards to be returned.
+        """
+        self.filter(mastery=MASTERY.new).order_by("created")
+
+    def get_learning_cards(self, limit: int = None) -> QuerySet:
+        """Query UserFlashCard with `learning` mastery level, ordered by the earliest next review schedule.
+
+        :param limit: How many cards to be returned.
+        """
+        self.filter(mastery=MASTERY.learning).order_by("next_review_time")
+
+    def get_acquired_cards(self, limit: int = None) -> QuerySet:
+        """Query UserFlashCard with `acquired` mastery level, ordered by the latest last review schedule.
+
+        :param limit: How many cards to be returned.
+        """
+        self.filter(mastery=MASTERY.acquired).order_by("-last_review_time")
+
+
 class UserFlashCard(TimeStampedModel):
+    objects = UserFlashCardManager()
+
     owner = models.ForeignKey(
         _USER_MODEL, on_delete=models.CASCADE, related_name="cards"
     )
@@ -65,6 +91,8 @@ class UserFlashCard(TimeStampedModel):
         if answer_quality not in range(0, 6):
             raise ValueError("Answer quality must be in range of [0, 5].")
 
+        if self.mastery == MASTERY.new:
+            self.mastery = MASTERY.learning
         if answer_quality < 3:
             self.review_iteration = 1
         else:
@@ -78,7 +106,6 @@ class UserFlashCard(TimeStampedModel):
         curr_time = timezone.now()
         self.last_review_time = curr_time
         self.next_review_time = self.last_review_time + timedelta(days=next_interval)
-        self.save()
 
     def save(self, *args, **kwargs):
         return super().save(*args, **kwargs)
