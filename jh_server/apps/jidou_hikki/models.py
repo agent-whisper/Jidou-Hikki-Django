@@ -69,24 +69,7 @@ class NotePageManager(models.Manager):
     @transaction.atomic
     def write_new_page(self, title, raw_text, notebook):
         page = self.model(title=title, text=raw_text, notebook=notebook)
-        lines = raw_text.split("\n")
-        html_lines = []
-        vocabularies = []
-        for line in lines:
-            if line:
-                tokens = Tokenizer.from_text(line.strip())
-                for tkn in tokens:
-                    if tkn.contains_kanji():
-                        vocab, _ = Vocabulary.objects.update_or_create_from_token(tkn)
-                        UserVocabulary.objects.get_or_create(
-                            user=notebook.owner, vocabulary=vocab
-                        )
-                        vocabularies.append(vocab)
-                html = [tkn.as_html() for tkn in tokens]
-                html_lines.append("".join(html))
-        page.html = "<br>".join(html_lines)
-        page.save()
-        page.vocabularies.set(vocabularies)
+        page.analyze()
         return page
 
 
@@ -106,6 +89,27 @@ class NotePage(TimeStampedModel):
 
     class Meta:
         unique_together = ("title", "notebook")
+
+    @transaction.atomic
+    def analyze(self):
+        lines = self.text.split("\n")
+        html_lines = []
+        vocabularies = []
+        for line in lines:
+            if line:
+                tokens = Tokenizer.from_text(line.strip())
+                for tkn in tokens:
+                    if tkn.contains_kanji():
+                        vocab, _ = Vocabulary.objects.update_or_create_from_token(tkn)
+                        UserVocabulary.objects.get_or_create(
+                            user=self.notebook.owner, vocabulary=vocab
+                        )
+                        vocabularies.append(vocab)
+                html = [tkn.as_html() for tkn in tokens]
+                html_lines.append("".join(html))
+        self.html = "<br>".join(html_lines)
+        self.save()
+        self.vocabularies.set(vocabularies)
 
 
 class Notebook(TimeStampedModel):
