@@ -100,7 +100,7 @@ class NotePage(TimeStampedModel):
         vocabularies = []
         for line in lines:
             if line:
-                tokens = _tokenizer.from_text(line.strip())
+                tokens = _tokenizer.tokenize_text(line.strip())
                 for tkn in tokens:
                     if tkn.contains_kanji():
                         vocab, _ = Vocabulary.objects.update_or_create_from_token(tkn)

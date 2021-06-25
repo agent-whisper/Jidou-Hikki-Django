@@ -83,7 +83,7 @@ class SudachiTokenizer(Tokenizer):
     _tokenizer = dictionary.Dictionary().create()
 
     @classmethod
-    def from_text(
+    def tokenize_text(
         cls,
         sentence: str,
         split_mode: "sudachipy.tokenizer.Tokenizer.SplitMode" = MODE_A,

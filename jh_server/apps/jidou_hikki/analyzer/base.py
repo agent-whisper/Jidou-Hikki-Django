@@ -71,7 +71,7 @@ class Token(ABC):
 class Tokenizer(ABC):
     @classmethod
     @abstractmethod
-    def from_text(cls, sentence: str, *args, **kwargs) -> List[Token]:
+    def tokenize_text(cls, sentence: str, *args, **kwargs) -> List[Token]:
         """
         Tokenize a sentence into a list of tokens.
         """
