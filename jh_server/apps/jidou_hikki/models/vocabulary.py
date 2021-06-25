@@ -121,7 +121,7 @@ class VocabularyManager(models.Manager):
                 "furigana": token.furigana,
                 "okurigana": token.okurigana,
                 "reading": token.reading_form,
-                "part_of_speech": token.meta,
+                "part_of_speech": token.part_of_speech,
             },
         )
 

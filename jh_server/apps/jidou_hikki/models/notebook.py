@@ -46,7 +46,7 @@ class NotePage(TimeStampedModel):
                     if tkn.contains_kanji():
                         vocab, _ = Vocabulary.objects.update_or_create_from_token(tkn)
                         UserFlashCard.objects.get_or_create(
-                            user=self.notebook.owner, vocabulary=vocab
+                            owner=self.notebook.owner, vocabulary=vocab
                         )
                         vocabularies.append(vocab)
                 html = [tkn.as_html() for tkn in tokens]
