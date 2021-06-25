@@ -113,15 +113,16 @@ class UserFlashCard(TimeStampedModel):
 
 class VocabularyManager(models.Manager):
     def update_or_create_from_token(self, token: Token) -> "Vocabulary":
+        normalized_token = _TOKENIZER.normalize_token(token)
         return self.update_or_create(
-            word_id=token.word_id,
+            word_id=normalized_token.word_id,
             defaults={
-                "word": token.lemma,
-                "kanji": token.kanji,
-                "furigana": token.furigana,
-                "okurigana": token.okurigana,
-                "reading": token.reading_form,
-                "part_of_speech": token.part_of_speech,
+                "word": normalized_token.lemma,
+                "kanji": normalized_token.kanji,
+                "furigana": normalized_token.furigana,
+                "okurigana": normalized_token.okurigana,
+                "reading": normalized_token.reading_form,
+                "part_of_speech": normalized_token.part_of_speech,
             },
         )
 
