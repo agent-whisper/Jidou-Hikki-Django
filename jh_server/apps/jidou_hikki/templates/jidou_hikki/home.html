@@ -1,9 +1,11 @@
-<h1>Notebooks</h1>
+<span>Welcome {{ user.username }}</span>
 
+<h1>Notebooks</h1>
+<a href="/notebooks/"><button>New Notebook</button></a>
 {% if notebooks %}
 <ul>
     {% for book in notebooks %}
-    <li><a href="/notebooks/{{ book.id }}">{{ book.title }} (by: {{ book.owner.username }})</a></li>
+    <li><a href="/notebooks/{{ book.id }}">{{ book.title }}</a></li>
     {% endfor %}
 </ul>
 {% else %}

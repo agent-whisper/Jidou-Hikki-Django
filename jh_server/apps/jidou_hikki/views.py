@@ -1,14 +1,54 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from django.shortcuts import get_object_or_404
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 
+from .forms import NotebookForm, JidouHikkiUserCreationForm
 from .models import Notebook, NotePage, JidouHikkiUser
 
 
-def notebooks(request):
-    notebooks = Notebook.objects.all()
-    template = loader.get_template("jidou_hikki/notebooks.html")
-    context = {"notebooks": notebooks}
+def register_view(request):
+    if request.method == "POST":
+        form = JidouHikkiUserCreationForm(request.POST)
+        if form.is_valid():
+            JidouHikkiUser.objects.create(username=form.cleaned_data["username"])
+            return HttpResponseRedirect(f"/")
+    else:
+        form = JidouHikkiUserCreationForm()
+    return render(request, "jidou_hikki/register.html", {"form": form})
+
+
+def index(request):
+    return HttpResponseRedirect("/home/")
+
+
+def new_notebook(request):
+    if request.method == "POST":
+        form = NotebookForm(request.POST)
+        if form.is_valid():
+            new_note = Notebook.objects.create(
+                title=form.cleaned_data["title"],
+                owner=request.user,
+                description=form.cleaned_data.get("description"),
+            )
+            return HttpResponseRedirect(f"/notebooks/{new_note.id}")
+    else:
+        form = NotebookForm()
+    return render(request, "jidou_hikki/new_notebook.html", {"form": form})
+
+
+def home(request):
+    user = JidouHikkiUser.objects.first()
+    if not user:
+        return HttpResponseRedirect(f"/accounts/register/")
+    login(request, user)
+    notebooks = Notebook.objects.all().order_by("title")
+    template = loader.get_template("jidou_hikki/home.html")
+    context = {
+        "notebooks": notebooks,
+        "user": user,
+    }
     return HttpResponse(template.render(context, request))
 
 

@@ -1,0 +1,7 @@
+<h1>Create New Notebook</h1>
+
+<form action="/notebooks/" method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit">
+</form>

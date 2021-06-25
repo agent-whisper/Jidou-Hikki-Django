@@ -19,8 +19,10 @@ from jh_server.apps.jidou_hikki import views as jh_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", jh_views.notebooks, name="index"),
-    path("notebooks/", jh_views.notebooks, name="notebooks"),
+    path("", jh_views.index, name="index"),
+    path("accounts/register/", jh_views.register_view, name="register"),
+    path("notebooks/", jh_views.new_notebook, name="notebooks"),
+    path("home/", jh_views.home, name="home"),
     path("notebooks/<int:book_id>", jh_views.notebook_content, name="book_content"),
     path("pages/<int:page_id>", jh_views.page, name="page"),
     path("vocab/", jh_views.vocabs, name="vocab"),
