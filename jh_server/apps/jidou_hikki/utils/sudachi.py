@@ -28,7 +28,7 @@ MODE_C = tokenizer.Tokenizer.SplitMode.C
 
 
 class Token(object):
-    _okurigana_template = "<ruby><div data-word-id={word_id}><rb>{surface}</rb><rp>(</rp><rt>{furigana}</rt><rp>)</rp></div>{okurigana}</ruby>"
+    _okurigana_template = "<ruby data-word-id={word_id}><rb>{surface}</rb><rp>(</rp><rt>{furigana}</rt><rp>)</rp>{okurigana}</ruby>"
 
     def __init__(self, morpheme: sudachipy.morpheme.Morpheme):
         self._token = morpheme
