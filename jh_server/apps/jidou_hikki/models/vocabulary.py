@@ -135,9 +135,9 @@ class Vocabulary(TimeStampedModel):
     word_id = models.TextField(unique=True)
     word = models.TextField()
     reading = models.TextField()
-    kanji = models.TextField()
-    furigana = models.TextField()
-    okurigana = models.TextField()
+    kanji = models.TextField(null=True)
+    furigana = models.TextField(null=True)
+    okurigana = models.TextField(null=True)
     part_of_speech = models.JSONField()
 
     def __str__(self):
