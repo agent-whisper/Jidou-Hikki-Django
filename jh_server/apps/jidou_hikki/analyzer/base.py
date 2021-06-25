@@ -79,6 +79,6 @@ class Tokenizer(ABC):
 
     @classmethod
     @abstractmethod
-    def normalize(cls, token: Token, *args, **kwargs) -> Token:
+    def normalize_token(cls, token: Token, *args, **kwargs) -> Token:
         """Create a normalized token from input token (i.e. dictionary form)."""
         raise NotImplementedError

@@ -94,7 +94,7 @@ class SudachiTokenizer(Tokenizer):
         ]
 
     @classmethod
-    def normalize(
+    def normalize_token(
         cls,
         token: Token,
         split_mode: "sudachipy.tokenizer.Tokenizer.SplitMode" = MODE_A,
