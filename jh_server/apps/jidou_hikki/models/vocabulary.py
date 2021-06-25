@@ -67,7 +67,7 @@ class UserFlashCard(TimeStampedModel):
         _USER_MODEL, on_delete=models.CASCADE, related_name="cards"
     )
     vocabulary = models.ForeignKey("Vocabulary", on_delete=models.CASCADE)
-    mastery = models.CharField(max_length=64, choices=MASTERY, default=MASTERY.learning)
+    mastery = models.CharField(max_length=64, choices=MASTERY, default=MASTERY.new)
     last_review_time = models.DateTimeField(null=True, default=None)
     next_review_time = models.DateTimeField(null=True, default=None)
     easiness_factor = models.FloatField(default=2.5)
