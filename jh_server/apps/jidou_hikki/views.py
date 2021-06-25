@@ -2,9 +2,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required
 
-from .forms import NotebookForm, JidouHikkiUserCreationForm
+from .forms import NotebookForm, JidouHikkiUserCreationForm, NotePageForm
 from .models import Notebook, NotePage, JidouHikkiUser
 
 
@@ -57,6 +56,22 @@ def notebook_content(request, book_id):
     template = loader.get_template("jidou_hikki/notebook_contents.html")
     context = {"book": book}
     return HttpResponse(template.render(context, request))
+
+
+def new_page(request, book_id):
+    book = get_object_or_404(Notebook, id=book_id)
+    if request.method == "POST":
+        form = NotePageForm(request.POST)
+        if form.is_valid():
+            new_page = book.add_page(
+                form.cleaned_data["title"], form.cleaned_data["content"]
+            )
+            return HttpResponseRedirect(f"/notebooks/{book.id}")
+    else:
+        form = NotePageForm()
+    return render(
+        request, "jidou_hikki/new_page.html", {"form": form, "notebook": book}
+    )
 
 
 def page(request, page_id):

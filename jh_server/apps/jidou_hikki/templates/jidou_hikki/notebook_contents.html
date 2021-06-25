@@ -1,5 +1,8 @@
 <h1>{{ book.title }}'s Content</h1>
+<p>{{ book.description }}</p>
 
+<h2>Contents</h2>
+<a href="/notebooks/{{ book.id }}/add_page/"><button>Add Page</button></a>
 {% if book.pages.exists %}
 <ol>
     {% for page in book.pages.all %}

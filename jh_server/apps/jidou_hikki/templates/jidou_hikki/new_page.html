@@ -1,0 +1,7 @@
+<h1>Add {{ notebook.title }}'s Content</h1>
+
+<form action="/notebooks/{{ notebook.id }}/add_page/" method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit">
+</form>

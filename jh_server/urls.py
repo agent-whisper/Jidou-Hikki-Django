@@ -24,6 +24,7 @@ urlpatterns = [
     path("notebooks/", jh_views.new_notebook, name="notebooks"),
     path("home/", jh_views.home, name="home"),
     path("notebooks/<int:book_id>", jh_views.notebook_content, name="book_content"),
+    path("notebooks/<int:book_id>/add_page/", jh_views.new_page, name="new_page"),
     path("pages/<int:page_id>", jh_views.page, name="page"),
     path("vocab/", jh_views.vocabs, name="vocab"),
 ]
