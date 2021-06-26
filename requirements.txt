@@ -1,10 +1,15 @@
 asgiref==3.3.4; python_version >= "3.6"
+chirptext==0.1.2; python_version >= "3.6"
 cython==0.29.23; python_version >= "2.6" and python_full_version < "3.0.0" or python_full_version >= "3.3.0"
 dartsclone==0.9.0
 django-model-utils==4.1.1
 django==3.2.4; python_version >= "3.6"
 jaconv==0.3
+jamdict-data==1.5
+jamdict==0.1a11; python_version >= "3.6"
+puchikarui==0.1; python_version >= "3.6"
 pytz==2021.1; python_version >= "3.6"
 sortedcontainers==2.1.0
 sqlparse==0.4.1; python_version >= "3.6"
+sudachidict-full==20210608
 sudachipy==0.5.2

@@ -11,9 +11,10 @@ Django = "^3.2.4"
 SudachiPy = "^0.5.2"
 django-model-utils = "^4.1.1"
 jaconv = "^0.3"
+SudachiDict-full = {version = "^20210608", extras = ["production"]}
+jamdict = "^0.1a11"
+jamdict-data = "^1.5"
 
-[tool.poetry.dev-dependencies]
-SudachiDict-core = "^20210608"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

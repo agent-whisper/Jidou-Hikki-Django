@@ -10,6 +10,14 @@ python-versions = ">=3.6"
 tests = ["pytest", "pytest-asyncio", "mypy (>=0.800)"]
 
 [[package]]
+name = "chirptext"
+version = "0.1.2"
+description = "A minimalist collection of text processing tools for Python 3"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[[package]]
 name = "cython"
 version = "0.29.23"
 description = "The Cython compiler for writing C extensions for the Python language."
@@ -65,6 +73,34 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "jamdict"
+version = "0.1a11"
+description = "Python library for using Japanese dictionaries and resources (Jim Breen's JMdict, KanjiDic2, KRADFILE, JMnedict)"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+chirptext = ">=0.1,<=0.2"
+puchikarui = ">=0.1,<0.3"
+
+[[package]]
+name = "jamdict-data"
+version = "1.5"
+description = "Precompiled database for jamdict library for manipulating Jim Breen's JMdict, KanjiDic2, KRADFILE and JMnedict. Compiled date: 17 Apr 2021."
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "puchikarui"
+version = "0.1"
+description = "A minimalist SQLite wrapper library for Python which supports ORM features."
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "pytz"
 version = "2021.1"
 description = "World timezone definitions, modern and historical"
@@ -89,10 +125,10 @@ optional = false
 python-versions = ">=3.5"
 
 [[package]]
-name = "sudachidict-core"
+name = "sudachidict-full"
 version = "20210608"
-description = "Sudachi Dictionary for SudachiPy - Core Edition"
-category = "dev"
+description = "Sudachi Dictionary for SudachiPy - Full Edition"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -114,12 +150,15 @@ sortedcontainers = ">=2.1.0,<2.2.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "42ced2e04bfaa34ae122a3bd7f9d9277cefff7d90d84e80115f39be21666384e"
+content-hash = "a41bac3097784d9248348b20340abaacf93d81bad271278308929dd78c18837c"
 
 [metadata.files]
 asgiref = [
     {file = "asgiref-3.3.4-py3-none-any.whl", hash = "sha256:92906c611ce6c967347bbfea733f13d6313901d54dcca88195eaeb52b2a8e8ee"},
     {file = "asgiref-3.3.4.tar.gz", hash = "sha256:d1216dfbdfb63826470995d31caed36225dcaf34f182e0fa257a4dd9e86f1b78"},
+]
+chirptext = [
+    {file = "chirptext-0.1.2.tar.gz", hash = "sha256:643c9c11508f509b37257e3f3a629a668c0908ae5f582d7b9f131234a7379303"},
 ]
 cython = [
     {file = "Cython-0.29.23-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:ff885f18d169759b57f116d3956e45cd2b9cba989fde348bba091544c668dc11"},
@@ -187,6 +226,15 @@ django-model-utils = [
 jaconv = [
     {file = "jaconv-0.3.tar.gz", hash = "sha256:cc70c796c19a6765598c03eac59d1399a555a9a8839cc70e540ec26f0ec3e66e"},
 ]
+jamdict = [
+    {file = "jamdict-0.1a11.tar.gz", hash = "sha256:5a5669b7d6d003eb0485a7d55ae04ee2842544bcd3afc2e25f62dcad983a4291"},
+]
+jamdict-data = [
+    {file = "jamdict_data-1.5.tar.gz", hash = "sha256:a4247dd9bb3148ab17c1b32fc56d7a7f1c35293b0d6ff2838c811f896d13f415"},
+]
+puchikarui = [
+    {file = "puchikarui-0.1.tar.gz", hash = "sha256:8ebe96e8683eac82624eb90dd517e26421e467637b3a1fe1ef5275ba2dacddc8"},
+]
 pytz = [
     {file = "pytz-2021.1-py2.py3-none-any.whl", hash = "sha256:eb10ce3e7736052ed3623d49975ce333bcd712c7bb19a58b9e2089d4057d0798"},
     {file = "pytz-2021.1.tar.gz", hash = "sha256:83a4a90894bf38e243cf052c8b58f381bfe9a7a483f6a9cab140bc7f702ac4da"},
@@ -199,8 +247,8 @@ sqlparse = [
     {file = "sqlparse-0.4.1-py3-none-any.whl", hash = "sha256:017cde379adbd6a1f15a61873f43e8274179378e95ef3fede90b5aa64d304ed0"},
     {file = "sqlparse-0.4.1.tar.gz", hash = "sha256:0f91fd2e829c44362cbcfab3e9ae12e22badaa8a29ad5ff599f9ec109f0454e8"},
 ]
-sudachidict-core = [
-    {file = "SudachiDict-core-20210608.tar.gz", hash = "sha256:80f51917f2325c91fc183dcc1cc40b1e4582ad00a85db48ba9f70c2bcb643ad2"},
+sudachidict-full = [
+    {file = "SudachiDict-full-20210608.tar.gz", hash = "sha256:e5f395e43e124327c2301a825fd402b243afd631c2dd5cd6896faee4c0b5535b"},
 ]
 sudachipy = [
     {file = "SudachiPy-0.5.2-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:8962f5eb648edda8fba73b7faacb19cc44397f527e5bf2c75f8910a548db096b"},

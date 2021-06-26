@@ -22,6 +22,8 @@ setup(
     packages=[
         'jh_server', 'jh_server.apps.jidou_hikki',
         'jh_server.apps.jidou_hikki.migrations',
+        'jh_server.apps.jidou_hikki.models',
+        'jh_server.apps.jidou_hikki.tokenizer',
         'jh_server.apps.jidou_hikki.utils'
     ],
     package_dir={"": "."},
@@ -30,7 +32,9 @@ setup(
     },
     install_requires=[
         'django==3.*,>=3.2.4', 'django-model-utils==4.*,>=4.1.1',
-        'jaconv==0.*,>=0.3.0', 'sudachipy==0.*,>=0.5.2'
+        'jaconv==0.*,>=0.3.0', 'jamdict==0.*,>=0.1.0.a11',
+        'jamdict-data==1.*,>=1.5.0',
+        'sudachidict-full[production]==20210608.*,>=20210608.0.0',
+        'sudachipy==0.*,>=0.5.2'
     ],
-    extras_require={"dev": ["sudachidict-core==20210608.*,>=20210608.0.0"]},
 )
