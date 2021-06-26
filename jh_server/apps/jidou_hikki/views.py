@@ -93,7 +93,7 @@ def new_page(request, book_id):
             new_page = book.add_page(
                 form.cleaned_data["title"], form.cleaned_data["content"]
             )
-            return HttpResponseRedirect(f"/notebooks/{book.id}")
+            return HttpResponseRedirect(f"/pages/{new_page.id}")
     else:
         form = NotePageForm()
     return render(
