@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-zb!f9@0$9w4v$2f0ngwur@=_9-%s#&7-$i4j98lfzz3i&&o6qo
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["192.168.1.16"]
 
 
 # Application definition
@@ -127,4 +127,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "jidou_hikki.JidouHikkiUser"
 
-TOKENIZER_CLASS = "jh_server.apps.jidou_hikki.analyzer.sudachi.SudachiTokenizer"
+TOKENIZER_CLASS = "jh_server.apps.jidou_hikki.tokenizer.sudachi.SudachiTokenizer"
