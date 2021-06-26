@@ -1,6 +1,8 @@
 import math
 from datetime import timedelta
 
+import jamdict
+from jamdict import Jamdict
 from django.db import models
 from django.db.models.query import QuerySet
 from django.utils import timezone
@@ -13,6 +15,7 @@ from ..tokenizer.base import Token
 
 _TOKENIZER = get_tokenizer()
 _USER_MODEL = get_user_model()
+_DICTIONARY = Jamdict()
 
 MASTERY = Choices("new", "learning", "acquired")
 
@@ -80,7 +83,7 @@ class UserFlashCard(TimeStampedModel):
         return f"({self.user.username}: {self.mastery}) {self.vocabulary}"
 
     class Meta:
-        ordering = ["vocabulary__word_id"]
+        ordering = ["vocabulary__dict_id"]
 
     def update_review_stats(self, answer_quality: int) -> None:
         """
@@ -111,20 +114,41 @@ class UserFlashCard(TimeStampedModel):
         return super().save(*args, **kwargs)
 
 
+class TokenIndex(TimeStampedModel):
+    vocabulary = models.ForeignKey("Vocabulary", on_delete=models.CASCADE)
+    token_id = models.TextField(unique=True)
+
+    def __str__(self):
+        return self.token_id
+
+
 class VocabularyManager(models.Manager):
     def update_or_create_from_token(self, token: Token) -> "Vocabulary":
-        normalized_token = _TOKENIZER.normalize_token(token)
-        return self.update_or_create(
-            word_id=normalized_token.word_id,
-            defaults={
-                "word": normalized_token.lemma,
-                "kanji": normalized_token.kanji,
-                "furigana": normalized_token.furigana,
-                "okurigana": normalized_token.okurigana,
-                "reading": normalized_token.reading_form,
-                "part_of_speech": normalized_token.part_of_speech,
-            },
-        )
+        # Check if token has been indexed before
+        if TokenIndex.objects.filter(token_id=token.word_id).exists():
+            vocab = TokenIndex.objects.get(token_id=token.word_id).vocabulary
+            created = False
+        else:
+            normalized_token = _TOKENIZER.normalize_token(token)
+            # Assume the first entry to be the best match
+            jmd_info = _DICTIONARY.lookup(normalized_token.word)
+            jmd_entry = jmd_info.entries[0]
+            vocab, _ = self.update_or_create(
+                dict_id=jmd_entry.idseq,
+                defaults={
+                    "word": normalized_token.word,
+                    "kanji": normalized_token.kanji,
+                    "furigana": normalized_token.furigana,
+                    "okurigana": normalized_token.okurigana,
+                    "reading": normalized_token.reading_form,
+                },
+            )
+            # Index for future lookup
+            TokenIndex.objects.update_or_create(
+                token_id=token.word_id, vocabulary=vocab
+            )
+            created = True
+        return vocab, created
 
 
 class Vocabulary(TimeStampedModel):
@@ -132,26 +156,35 @@ class Vocabulary(TimeStampedModel):
 
     objects = VocabularyManager()
 
-    word_id = models.TextField(unique=True)
+    dict_id = models.IntegerField()
     word = models.TextField()
     reading = models.TextField()
     kanji = models.TextField(null=True)
     furigana = models.TextField(null=True)
     okurigana = models.TextField(null=True)
-    part_of_speech = models.JSONField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._jmd_lookup = None
 
     def __str__(self):
-        return f"{self.word_id}: {self.word}"
+        return f"{self.word}"
 
-    def as_token(self):
+    def as_token(self) -> Token:
         token = _TOKENIZER.tokenize_text(self.word)
         return token[0] if token else None
 
-    def as_html(self):
+    def as_html(self) -> str:
         token = self.as_token()
         return token.as_html() if token else ""
 
-    def as_text(self):
+    @property
+    def jmdict(self) -> jamdict.util.LookupResult:
+        if not self._jmd_lookup:
+            self._jmd_lookup = _DICTIONARY.lookup(f"id#{self.dict_id}")
+        return self._jmd_lookup
+
+    def as_text(self) -> str:
         if self.kanji:
             return self._reading_template.format(
                 first=self.furigana,
@@ -160,6 +193,7 @@ class Vocabulary(TimeStampedModel):
         return self.word
 
 
-class EnglishTranslation(TimeStampedModel):
-    jp_word = models.ForeignKey(Vocabulary, on_delete=models.CASCADE)
+class Translation(TimeStampedModel):
+    vocabulary = models.ForeignKey(Vocabulary, on_delete=models.CASCADE)
     translation = models.TextField()
+    lang = models.CharField(max_length=8)
