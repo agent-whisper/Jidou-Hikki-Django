@@ -8,7 +8,7 @@ def get_tokenizer():
     tokenizer = getattr(
         settings,
         "TOKENIZER_CLASS",
-        "jh_server.apps.jidou_hikki.analyzer.sudachi.SudachiTokenizer",
+        "jh_server.apps.jidou_hikki.tokenizer.sudachi.SudachiTokenizer",
     )
     tokenizer = re.findall("(.*)\.(.*)$", tokenizer)
     assert tokenizer and len(tokenizer[0]) == 2

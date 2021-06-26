@@ -80,7 +80,7 @@ class SudachiToken(Token):
 
 
 class SudachiTokenizer(Tokenizer):
-    _tokenizer = dictionary.Dictionary().create()
+    _tokenizer = dictionary.Dictionary(dict_type="full").create()
 
     @classmethod
     def tokenize_text(

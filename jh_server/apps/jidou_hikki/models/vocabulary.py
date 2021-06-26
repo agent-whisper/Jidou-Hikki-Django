@@ -8,8 +8,8 @@ from model_utils.models import TimeStampedModel
 from model_utils.choices import Choices
 from django.contrib.auth import get_user_model
 
-from ..analyzer import get_tokenizer
-from ..analyzer.base import Token
+from ..tokenizer import get_tokenizer
+from ..tokenizer.base import Token
 
 _TOKENIZER = get_tokenizer()
 _USER_MODEL = get_user_model()

@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from model_utils.models import TimeStampedModel
 
 from .vocabulary import Vocabulary, UserFlashCard
-from ..analyzer import get_tokenizer
+from ..tokenizer import get_tokenizer
 
 _TOKENIZER = get_tokenizer()
 _USER_MODEL = get_user_model()
