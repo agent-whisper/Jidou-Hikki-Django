@@ -6,6 +6,7 @@ from jamdict import Jamdict
 from django.db import models
 from django.db.models.query import QuerySet
 from django.utils import timezone
+from django.contrib.auth.models import AbstractUser
 from model_utils.models import TimeStampedModel
 from model_utils.choices import Choices
 from django.contrib.auth import get_user_model
@@ -41,26 +42,33 @@ def calc_new_easiness_factor(old_ef: float, ans_quality: int) -> float:
 
 
 class UserFlashCardManager(models.Manager):
-    def get_new_cards(self, limit: int = None) -> QuerySet:
+    def get_new_cards(self, owner: AbstractUser, limit: int = None) -> QuerySet:
         """Query UserFlashCard with `new` mastery level, ordered by the created time.
 
+        :param owner: Reference to the cards owner.
         :param limit: How many cards to be returned.
         """
-        self.filter(mastery=MASTERY.new).order_by("created")
+        return self.filter(owner=owner, mastery=MASTERY.new).order_by("created")
 
-    def get_learning_cards(self, limit: int = None) -> QuerySet:
+    def get_learning_cards(self, owner: AbstractUser, limit: int = None) -> QuerySet:
         """Query UserFlashCard with `learning` mastery level, ordered by the earliest next review schedule.
 
+        :param owner: Reference to the cards owner.
         :param limit: How many cards to be returned.
         """
-        self.filter(mastery=MASTERY.learning).order_by("next_review_time")
+        return self.filter(owner=owner, mastery=MASTERY.learning).order_by(
+            "next_review_time"
+        )
 
-    def get_acquired_cards(self, limit: int = None) -> QuerySet:
+    def get_acquired_cards(self, owner: AbstractUser, limit: int = None) -> QuerySet:
         """Query UserFlashCard with `acquired` mastery level, ordered by the latest last review schedule.
 
+        :param owner: Reference to the cards owner.
         :param limit: How many cards to be returned.
         """
-        self.filter(mastery=MASTERY.acquired).order_by("-last_review_time")
+        return self.filter(owner=owner, mastery=MASTERY.acquired).order_by(
+            "-last_review_time"
+        )
 
 
 class UserFlashCard(TimeStampedModel):
@@ -80,7 +88,7 @@ class UserFlashCard(TimeStampedModel):
         unique_together = ("user", "vocabulary")
 
     def __str__(self):
-        return f"({self.user.username}: {self.mastery}) {self.vocabulary}"
+        return f"({self.owner.username}: {self.mastery}) {self.vocabulary}"
 
     class Meta:
         ordering = ["vocabulary__dict_id"]
