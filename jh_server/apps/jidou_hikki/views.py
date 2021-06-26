@@ -10,7 +10,7 @@ from .forms import NotebookForm, JidouHikkiUserCreationForm, NotePageForm
 from .models import Notebook, NotePage, JidouHikkiUser, UserFlashCard
 
 
-def serialize_deck(vocabularies: Iterable[Vocabulary]):
+def serialize_vocab_list(vocabularies: Iterable[Vocabulary]):
     to_json = lambda entry: entry.to_json()
     serialized_deck = []
     for vocab in vocabularies:
@@ -104,7 +104,8 @@ def new_page(request, book_id):
 def page(request, page_id):
     page = get_object_or_404(NotePage, id=page_id)
     template = loader.get_template("jidou_hikki/page.html")
-    context = {"page": page}
+    words = serialize_vocab_list(page.vocabularies.all())
+    context = {"page": page, "words": words}
     return HttpResponse(template.render(context, request))
 
 
@@ -113,19 +114,19 @@ def vocabs(request):
     template = loader.get_template("jidou_hikki/vocabs.html")
     context = {
         "user": user,
-        "new_deck": serialize_deck(
+        "new_deck": serialize_vocab_list(
             [
                 card.vocabulary
                 for card in UserFlashCard.objects.get_new_cards(owner=user)
             ]
         ),
-        "learning_deck": serialize_deck(
+        "learning_deck": serialize_vocab_list(
             [
                 card.vocabulary
                 for card in UserFlashCard.objects.get_learning_cards(owner=user)
             ]
         ),
-        "acquired_deck": serialize_deck(
+        "acquired_deck": serialize_vocab_list(
             [
                 card.vocabulary
                 for card in UserFlashCard.objects.get_acquired_cards(owner=user)

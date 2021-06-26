@@ -5,17 +5,33 @@
 </head>
 
 <body>
-    (Notebook: <i>{{ page.notebook.title }}</i>)
-
+    <a href="/notebooks/{{ page.notebook.id }}"> &#8592; return</a><br>
     <h1>{{ page.title }}</h1>
+
     {{ page.html|safe }}
+
     <hr>
     <h3>Word lists</h3>
-    <ol>
-        {% for vocab in page.vocabularies.all %}
-        <li><span><ruby>{{ vocab.kanji }} <rt>{{ vocab.furigana }}</rt></ruby>{{ vocab.okurigana }}</span></li>
+    <ul>
+        {% for word in words %}
+        {{ word.translation }}
+        <li>
+            {% if word.word_html %}
+            {{ word.word_html|safe }}
+            {% else %}
+            <span>{{ word.word }} ({{ word.kana }})</span>
+            {% endif %}
+        </li>
+        <ol>
+            {% for sense in word.senses %}
+            <li>
+                <span>{{ sense.pos }}</span><br>
+                <span>{{ sense.translations }}</span>
+            </li>
+            {% endfor %}
+        </ol>
         {% endfor %}
-    </ol>
+    </ul>
     <hr>
 </body>
 
