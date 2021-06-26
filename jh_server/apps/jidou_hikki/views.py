@@ -1,10 +1,37 @@
+from jh_server.apps.jidou_hikki.models.vocabulary import Vocabulary
+from typing import Iterable
+from django.db.models.query import QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import login
 
 from .forms import NotebookForm, JidouHikkiUserCreationForm, NotePageForm
-from .models import Notebook, NotePage, JidouHikkiUser
+from .models import Notebook, NotePage, JidouHikkiUser, UserFlashCard
+
+
+def serialize_deck(vocabularies: Iterable[Vocabulary]):
+    to_json = lambda entry: entry.to_json()
+    serialized_deck = []
+    for vocab in vocabularies:
+        for entry_json in list(map(to_json, vocab.jmdict.entries)):
+            vocab = {
+                "word": vocab.word,
+                "word_html": vocab.as_html(),
+                "kana": ",".join([kana["text"] for kana in entry_json.get("kana", [])]),
+                "senses": [],
+            }
+            for sense in entry_json.get("senses", []):
+                vocab["senses"].append(
+                    {
+                        "pos": ",".join(sense["pos"]),
+                        "translations": ",".join(
+                            tl["text"] for tl in sense["SenseGloss"]
+                        ),
+                    }
+                )
+            serialized_deck.append(vocab)
+    return serialized_deck
 
 
 def register_view(request):
@@ -84,5 +111,25 @@ def page(request, page_id):
 def vocabs(request):
     user = JidouHikkiUser.objects.first()
     template = loader.get_template("jidou_hikki/vocabs.html")
-    context = {"user": user}
+    context = {
+        "user": user,
+        "new_deck": serialize_deck(
+            [
+                card.vocabulary
+                for card in UserFlashCard.objects.get_new_cards(owner=user)
+            ]
+        ),
+        "learning_deck": serialize_deck(
+            [
+                card.vocabulary
+                for card in UserFlashCard.objects.get_learning_cards(owner=user)
+            ]
+        ),
+        "acquired_deck": serialize_deck(
+            [
+                card.vocabulary
+                for card in UserFlashCard.objects.get_acquired_cards(owner=user)
+            ]
+        ),
+    }
     return HttpResponse(template.render(context, request))

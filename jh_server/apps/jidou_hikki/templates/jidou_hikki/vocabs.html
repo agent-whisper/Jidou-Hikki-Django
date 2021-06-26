@@ -1,8 +1,67 @@
 <h1>{{ user.username }}'s Cards</h1>
 
-<ol>
-    {% for card in user.cards.all %}
-    <li><span><ruby>{{ card.vocabulary.kanji }} <rt>{{ card.vocabulary.furigana }}</rt>
-            </ruby>{{card.vocabulary.okurigana }}</span></li>
+<h2>New Deck</h2>
+<ul>
+    {% for card in new_deck %}
+    {{ card.translation }}
+    <li>
+        {% if card.word_html %}
+        {{ card.word_html|safe }}
+        {% else %}
+        <span>{{ card.word }} ({{ card.kana }})</span>
+        {% endif %}
+    </li>
+    <ol>
+        {% for sense in card.senses %}
+        <li>
+            <span>{{ sense.pos }}</span><br>
+            <span>{{ sense.translations }}</span>
+        </li>
+        {% endfor %}
+    </ol>
     {% endfor %}
-</ol>
+</ul>
+<hr>
+<h2>Learning Deck</h2>
+<ul>
+    {% for card in learning_deck %}
+    {{ card.translation }}
+    <li>
+        {% if card.word_html %}
+        {{ card.word_html|safe }}
+        {% else %}
+        <span>{{ card.word }} ({{ card.kana }})</span>
+        {% endif %}
+    </li>
+    <ol>
+        {% for sense in card.senses %}
+        <li>
+            <span>{{ sense.pos }}</span><br>
+            <span>{{ sense.translations }}</span>
+        </li>
+        {% endfor %}
+    </ol>
+    {% endfor %}
+</ul>
+<hr>
+<h2>Acquired Deck</h2>
+<ul>
+    {% for card in acquired_deck %}
+    {{ card.translation }}
+    <li>
+        {% if card.word_html %}
+        {{ card.word_html|safe }}
+        {% else %}
+        <span>{{ card.word }} ({{ card.kana }})</span>
+        {% endif %}
+    </li>
+    <ol>
+        {% for sense in card.senses %}
+        <li>
+            <span>{{ sense.pos }}</span><br>
+            <span>{{ sense.translations }}</span>
+        </li>
+        {% endfor %}
+    </ol>
+    {% endfor %}
+</ul>
