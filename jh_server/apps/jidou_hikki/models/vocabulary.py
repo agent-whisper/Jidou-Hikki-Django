@@ -48,7 +48,10 @@ class UserFlashCardManager(models.Manager):
         :param owner: Reference to the cards owner.
         :param limit: How many cards to be returned.
         """
-        return self.filter(owner=owner, mastery=MASTERY.new).order_by("created")
+        queryset = self.filter(owner=owner, mastery=MASTERY.new).order_by("created")
+        if limit:
+            return queryset[:limit]
+        return queryset
 
     def get_learning_cards(self, owner: AbstractUser, limit: int = None) -> QuerySet:
         """Query UserFlashCard with `learning` mastery level, ordered by the earliest next review schedule.
@@ -56,9 +59,12 @@ class UserFlashCardManager(models.Manager):
         :param owner: Reference to the cards owner.
         :param limit: How many cards to be returned.
         """
-        return self.filter(owner=owner, mastery=MASTERY.learning).order_by(
+        queryset = self.filter(owner=owner, mastery=MASTERY.learning).order_by(
             "next_review_time"
         )
+        if limit:
+            return queryset[:limit]
+        return queryset
 
     def get_acquired_cards(self, owner: AbstractUser, limit: int = None) -> QuerySet:
         """Query UserFlashCard with `acquired` mastery level, ordered by the latest last review schedule.
@@ -66,9 +72,12 @@ class UserFlashCardManager(models.Manager):
         :param owner: Reference to the cards owner.
         :param limit: How many cards to be returned.
         """
-        return self.filter(owner=owner, mastery=MASTERY.acquired).order_by(
+        queryset = self.filter(owner=owner, mastery=MASTERY.acquired).order_by(
             "-last_review_time"
         )
+        if limit:
+            return queryset[:limit]
+        return queryset
 
 
 class UserFlashCard(TimeStampedModel):
