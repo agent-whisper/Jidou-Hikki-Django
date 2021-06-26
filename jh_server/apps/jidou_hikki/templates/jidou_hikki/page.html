@@ -6,9 +6,12 @@
 
 <body>
     <a href="/notebooks/{{ page.notebook.id }}"> &#8592; return</a><br>
+    <button id=furigana-toggle data-furigana-state=show_all onclick="toggleAllFurigana(this)">Toggle Furigana</button>
     <h1>{{ page.title }}</h1>
 
-    {{ page.html|safe }}
+    <div id=page-container>
+        {{ page.html|safe }}
+    </div>
 
     <hr>
     <h3>Word lists</h3>
@@ -33,6 +36,49 @@
         {% endfor %}
     </ul>
     <hr>
+    <script>
+        function toggleFurigana(el) {
+            let word_id = el.getAttribute("data-word-id");
+            words = document.querySelectorAll(`[data-word-id='${word_id}']`);
+            console.log(`${word_id}: Found ${words.length} instances`)
+            words.forEach((x) => {
+                if (x.childNodes[2].style.display === "none") {
+                    x.childNodes[2].style.display = "";
+                } else {
+                    x.childNodes[2].style.display = "none";
+                }
+            })
+        }
+
+        function toggleAllFurigana(el) {
+            kanjis = document.querySelectorAll("#page-container > * > ruby");
+            if (el.getAttribute("data-furigana-state") == "show_all") {
+                console.log("Hiding all furigana")
+                el.setAttribute("data-furigana-state", "hidden")
+            } else {
+                console.log("Showing all furigana")
+                el.setAttribute("data-furigana-state", "show_all")
+            }
+            [...kanjis].forEach(function (w) {
+                if (el.getAttribute("data-furigana-state") == "show_all") {
+                    w.childNodes[2].style.display = "";
+                } else {
+                    w.childNodes[2].style.display = "none";
+                }
+            })
+        }
+
+        // Setting initial states
+        kanjis = document.querySelectorAll("#page-container > * > ruby");
+        [...kanjis].forEach(function (w) {
+            w.onclick = function () { toggleFurigana(this); };
+            w.onmouseover = "";
+            w.style = "cursor: pointer;";
+            w.childNodes[2].style.display = "none";
+        })
+        furigana_toggle = document.getElementById("furigana-toggle")
+        furigana_toggle.setAttribute("data-furigana-state", "hidden")
+    </script>
 </body>
 
 </html>
