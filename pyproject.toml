@@ -14,6 +14,7 @@ jaconv = "^0.3"
 SudachiDict-full = {version = "^20210608", extras = ["production"]}
 jamdict = "^0.1a11"
 jamdict-data = "^1.5"
+gunicorn = "^20.1.0"
 
 
 [build-system]

@@ -4,6 +4,7 @@ cython==0.29.23; python_version >= "2.6" and python_full_version < "3.0.0" or py
 dartsclone==0.9.0
 django-model-utils==4.1.1
 django==3.2.4; python_version >= "3.6"
+gunicorn==20.1.0; python_version >= "3.5"
 jaconv==0.3
 jamdict-data==1.5
 jamdict==0.1a11; python_version >= "3.6"

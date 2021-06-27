@@ -32,8 +32,8 @@ setup(
     },
     install_requires=[
         'django==3.*,>=3.2.4', 'django-model-utils==4.*,>=4.1.1',
-        'jaconv==0.*,>=0.3.0', 'jamdict==0.*,>=0.1.0.a11',
-        'jamdict-data==1.*,>=1.5.0',
+        'gunicorn==20.*,>=20.1.0', 'jaconv==0.*,>=0.3.0',
+        'jamdict==0.*,>=0.1.0.a11', 'jamdict-data==1.*,>=1.5.0',
         'sudachidict-full[production]==20210608.*,>=20210608.0.0',
         'sudachipy==0.*,>=0.5.2'
     ],
