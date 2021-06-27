@@ -1,0 +1,1 @@
+web: gunicorn jh_server.wsgi --workers 4 --env DEMO_ONLY=true
