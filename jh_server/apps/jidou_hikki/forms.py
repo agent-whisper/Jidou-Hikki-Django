@@ -13,3 +13,13 @@ class NotebookForm(forms.Form):
 class NotePageForm(forms.Form):
     title = forms.CharField(label="Page's Title")
     content = forms.CharField(widget=forms.Textarea)
+
+
+class AnalysisForm(forms.Form):
+    content = forms.CharField(
+        max_length=100,
+        label="",
+        widget=forms.Textarea(
+            attrs={"placeholder": "Japanese text (max 100 characters)"}
+        ),
+    )

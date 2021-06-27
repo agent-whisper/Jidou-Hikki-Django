@@ -1,12 +1,12 @@
 from jh_server.apps.jidou_hikki.models.vocabulary import Vocabulary
 from typing import Iterable
-from django.db.models.query import QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import login
 
-from .forms import NotebookForm, JidouHikkiUserCreationForm, NotePageForm
+from .utils import demo as demo_utils
+from .forms import NotebookForm, JidouHikkiUserCreationForm, NotePageForm, AnalysisForm
 from .models import Notebook, NotePage, JidouHikkiUser, UserFlashCard
 
 
@@ -15,14 +15,14 @@ def serialize_vocab_list(vocabularies: Iterable[Vocabulary]):
     serialized_deck = []
     for vocab in vocabularies:
         for entry_json in list(map(to_json, vocab.jmdict.entries)):
-            vocab = {
+            card = {
                 "word": vocab.word,
                 "word_html": vocab.as_html(),
                 "kana": ",".join([kana["text"] for kana in entry_json.get("kana", [])]),
                 "senses": [],
             }
             for sense in entry_json.get("senses", []):
-                vocab["senses"].append(
+                card["senses"].append(
                     {
                         "pos": ",".join(sense["pos"]),
                         "translations": ",".join(
@@ -30,7 +30,7 @@ def serialize_vocab_list(vocabularies: Iterable[Vocabulary]):
                         ),
                     }
                 )
-            serialized_deck.append(vocab)
+            serialized_deck.append(card)
     return serialized_deck
 
 
@@ -134,3 +134,20 @@ def vocabs(request):
         ),
     }
     return HttpResponse(template.render(context, request))
+
+
+def analyze(request):
+    if request.method == "POST":
+        form = AnalysisForm(request.POST)
+        if form.is_valid():
+            html, vocabs, failed = demo_utils.analyze_text(form.cleaned_data["content"])
+            page = {"title": "Result", "html": html}
+            words = serialize_vocab_list(vocabs)
+            template = loader.get_template("jidou_hikki/analysis.html")
+            context = {"page": page, "words": words, "failed": failed}
+            return HttpResponse(template.render(context, request))
+        else:
+            return HttpResponseRedirect(f"/analyze/")
+    else:
+        form = AnalysisForm()
+    return render(request, "jidou_hikki/new_analysis.html", {"form": form})
