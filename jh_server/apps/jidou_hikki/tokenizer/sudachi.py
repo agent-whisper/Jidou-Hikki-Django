@@ -98,8 +98,6 @@ class SudachiTokenizer(Tokenizer):
         cls,
         token: Token,
         split_mode: "sudachipy.tokenizer.Tokenizer.SplitMode" = MODE_A,
-    ) -> SudachiToken:
+    ) -> List[SudachiToken]:
         tokens = cls._tokenizer.tokenize(token.normalized_form, split_mode)
-        if len(tokens) == 1:
-            return SudachiToken(tokens[0])
-        raise ValueError(f"Cannot normalize {token}")
+        return [SudachiToken(tkn) for tkn in tokens]

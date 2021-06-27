@@ -44,11 +44,12 @@ class NotePage(TimeStampedModel):
                 tokens = _TOKENIZER.tokenize_text(line.strip())
                 for tkn in tokens:
                     if tkn.contains_kanji():
-                        vocab, _ = Vocabulary.objects.update_or_create_from_token(tkn)
-                        UserFlashCard.objects.get_or_create(
-                            owner=self.notebook.owner, vocabulary=vocab
-                        )
-                        vocabularies.append(vocab)
+                        vocabs = Vocabulary.objects.update_or_create_from_token(tkn)
+                        for vocab in vocabs:
+                            UserFlashCard.objects.get_or_create(
+                                owner=self.notebook.owner, vocabulary=vocab
+                            )
+                        vocabularies += vocabs
                 html = [tkn.as_html() for tkn in tokens]
                 html_lines.append("".join(html))
         self.html = "<br>".join(html_lines)

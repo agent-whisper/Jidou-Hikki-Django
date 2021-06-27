@@ -1,4 +1,6 @@
 import math
+import logging
+from typing import List
 from datetime import timedelta
 
 import jamdict
@@ -14,6 +16,7 @@ from django.contrib.auth import get_user_model
 from ..tokenizer import get_tokenizer
 from ..tokenizer.base import Token
 
+logger = logging.getLogger("root")
 _TOKENIZER = get_tokenizer()
 _USER_MODEL = get_user_model()
 _DICTIONARY = Jamdict()
@@ -140,32 +143,39 @@ class TokenIndex(TimeStampedModel):
 
 
 class VocabularyManager(models.Manager):
-    def update_or_create_from_token(self, token: Token) -> "Vocabulary":
+    def update_or_create_from_token(self, token: Token) -> List["Vocabulary"]:
         # Check if token has been indexed before
+        vocabs = []
         if TokenIndex.objects.filter(token_id=token.word_id).exists():
-            vocab = TokenIndex.objects.get(token_id=token.word_id).vocabulary
-            created = False
+            vocabs.append(TokenIndex.objects.get(token_id=token.word_id).vocabulary)
         else:
-            normalized_token = _TOKENIZER.normalize_token(token)
-            # Assume the first entry to be the best match
-            jmd_info = _DICTIONARY.lookup(normalized_token.word)
-            jmd_entry = jmd_info.entries[0]
-            vocab, _ = self.update_or_create(
-                dict_id=jmd_entry.idseq,
-                defaults={
-                    "word": normalized_token.word,
-                    "kanji": normalized_token.kanji,
-                    "furigana": normalized_token.furigana,
-                    "okurigana": normalized_token.okurigana,
-                    "reading": normalized_token.reading_form,
-                },
-            )
-            # Index for future lookup
-            TokenIndex.objects.update_or_create(
-                token_id=token.word_id, vocabulary=vocab
-            )
-            created = True
-        return vocab, created
+            normalized_tokens = _TOKENIZER.normalize_token(token)
+            for normalized_tkn in normalized_tokens:
+                # Assume the first entry to be the best match
+                jmd_info = _DICTIONARY.lookup(normalized_tkn.word)
+                if len(jmd_info.entries) > 0:
+                    # Some tokens may be a set of expressions, and not available in
+                    # JMDict. Example cases:
+                    #   -  キャラ作り
+                    jmd_entry = jmd_info.entries[0]
+                    vocab, _ = self.update_or_create(
+                        dict_id=jmd_entry.idseq,
+                        defaults={
+                            "word": normalized_tkn.word,
+                            "kanji": normalized_tkn.kanji,
+                            "furigana": normalized_tkn.furigana,
+                            "okurigana": normalized_tkn.okurigana,
+                            "reading": normalized_tkn.reading_form,
+                        },
+                    )
+                    # Index normalized token for future lookup
+                    TokenIndex.objects.update_or_create(
+                        token_id=normalized_tkn.word_id, vocabulary=vocab
+                    )
+                    vocabs.append(vocab)
+                else:
+                    logger.error(f"No JMDict entries for {normalized_tkn}.")
+        return vocabs
 
 
 class Vocabulary(TimeStampedModel):

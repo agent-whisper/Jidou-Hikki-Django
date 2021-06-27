@@ -15,7 +15,7 @@
 
     <hr>
     <h3>Word lists</h3>
-    <ul>
+    <ol>
         {% for word in words %}
         {{ word.translation }}
         <li>
@@ -34,7 +34,7 @@
             {% endfor %}
         </ol>
         {% endfor %}
-    </ul>
+    </ol>
     <hr>
     <script>
         function toggleFurigana(el) {
