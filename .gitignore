@@ -1,8 +1,14 @@
+# Ignore local directories
 .vscode
 tmp
 
+# Ignore migration files
 jh_server/apps/*/migrations/*.py
 !jh_server/apps/*/migrations/__init__.py
+
+# Ignore static folder
+staticfiles/*
+!staticfiles/.gitkeep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
