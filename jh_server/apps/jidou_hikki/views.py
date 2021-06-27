@@ -136,18 +136,18 @@ def vocabs(request):
     return HttpResponse(template.render(context, request))
 
 
-def analyze(request):
+def demo(request):
     if request.method == "POST":
         form = AnalysisForm(request.POST)
         if form.is_valid():
             html, vocabs, failed = demo_utils.analyze_text(form.cleaned_data["content"])
             page = {"title": "Result", "html": html}
             words = serialize_vocab_list(vocabs)
-            template = loader.get_template("jidou_hikki/analysis.html")
+            template = loader.get_template("jidou_hikki/demo_result.html")
             context = {"page": page, "words": words, "failed": failed}
             return HttpResponse(template.render(context, request))
         else:
-            return HttpResponseRedirect(f"/analyze/")
+            return HttpResponseRedirect(f"/demo_home/")
     else:
         form = AnalysisForm()
-    return render(request, "jidou_hikki/new_analysis.html", {"form": form})
+    return render(request, "jidou_hikki/demo_home.html", {"form": form})

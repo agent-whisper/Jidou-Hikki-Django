@@ -1,0 +1,34 @@
+<html>
+
+<head>
+
+</head>
+
+<body>
+
+    <h1>Jidou Hikki: Text Analyzer Demo</h1>
+    <p>Parses japanese text to automatically take notes of the kanjis inside.</p>
+    <p>Github: <a target="_blank" href="https://github.com/agent-whisper/Jidou-Hikki-Django">Jidou-Hikki-Django</a></p>
+    <p>Japanese dictionaries and libraries used:</p>
+    <ul>
+        <li><a target="_blank" href="https://github.com/WorksApplications/SudachiPy">SudachiPy</a></li>
+        <li><a target="_blank" href="https://github.com/neocl/jamdict">jamdict</a></li>
+    </ul>
+    <form name="analysis-form" action="/demo/" method="POST" onsubmit="return validateForm()">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit">
+    </form>
+    <script>
+        function validateForm() {
+            let x = document.getElementById("id_content")
+            console.log(x.value.length)
+            if (x.value.length > 100) {
+                alert("Content exceeds 100 characters.");
+                return false;
+            }
+        }
+    </script>
+</body>
+
+</html>

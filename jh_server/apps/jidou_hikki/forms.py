@@ -17,9 +17,11 @@ class NotePageForm(forms.Form):
 
 class AnalysisForm(forms.Form):
     content = forms.CharField(
-        max_length=100,
         label="",
         widget=forms.Textarea(
-            attrs={"placeholder": "Japanese text (max 100 characters)"}
+            attrs={
+                "placeholder": "Japanese text (max 100 characters)",
+                "maxlength": 100,
+            }
         ),
     )

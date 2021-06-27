@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -128,3 +129,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "jidou_hikki.JidouHikkiUser"
 
 TOKENIZER_CLASS = "jh_server.apps.jidou_hikki.tokenizer.sudachi.SudachiTokenizer"
+
+DEMO_ONLY = os.getenv("DEMO_ONLY", "false")
+DEMO_ONLY = DEMO_ONLY.lower() == "true"

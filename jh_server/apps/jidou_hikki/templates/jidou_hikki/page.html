@@ -39,7 +39,7 @@
     <script>
         function toggleFurigana(el) {
             let word_id = el.getAttribute("data-word-id");
-            words = document.querySelectorAll(`[data-word-id='${word_id}']`);
+            words = document.querySelectorAll(`#page-container > * > [data-word-id='${word_id}']`);
             console.log(`${word_id}: Found ${words.length} instances`)
             words.forEach((x) => {
                 if (x.childNodes[2].style.display === "none") {
