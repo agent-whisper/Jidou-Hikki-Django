@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls.static import static
 from django.conf import settings
 
 from jh_server.apps.jidou_hikki import views as jh_views
@@ -37,3 +38,5 @@ else:
         path("vocab/", jh_views.vocabs, name="vocab"),
         path("demo/", jh_views.demo, name="demo"),
     ]
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
