@@ -87,6 +87,33 @@ class NotePage(TimeStampedModel):
         unique_together = ("title", "notebook")
 
     @transaction.atomic
+    def write_append(self, text: str) -> Sentence:
+        tokens = _TOKENIZER.tokenize_text(text)
+        html = []
+        vocabularies = []
+        for tkn in tokens:
+            if tkn.contains_kanji():
+                vocabs = Vocabulary.objects.update_or_create_from_token(tkn)
+                for vocab in vocabs:
+                    UserFlashCard.objects.get_or_create(
+                        owner=self.notebook.owner, vocabulary=vocab
+                    )
+                vocabularies += vocabs
+                html.append(f"{{{tkn.word_id}}}")
+            else:
+                html.append(tkn.word)
+        new_sentence = Sentence.objects.create(text=text, html_template=" ".join(html))
+        new_sentence.vocabularies.set(vocabs)
+        if not (self.first_line and self.last_line):
+            self.first_line = new_sentence
+            self.last_line = new_sentence
+        else:
+            self.last_line.set_next(new_sentence)
+            self.last_line = new_sentence
+        self.save()
+        return new_sentence
+
+    @transaction.atomic
     def analyze(self):
         lines = self.text.split("\n")
         html_lines = []
