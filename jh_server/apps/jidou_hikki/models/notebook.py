@@ -60,7 +60,6 @@ class NotePage(TimeStampedModel):
     title = models.TextField()
     text = models.TextField()
     sentences = models.ManyToManyField(Sentence, related_name="page")
-    html = models.TextField()
     vocabularies = models.ManyToManyField(Vocabulary)
     notebook = models.ForeignKey(
         "Notebook", on_delete=models.CASCADE, related_name="pages"
@@ -116,24 +115,10 @@ class NotePage(TimeStampedModel):
     @transaction.atomic
     def analyze(self):
         lines = self.text.split("\n")
-        html_lines = []
-        vocabularies = []
         for line in lines:
             if line:
-                tokens = _TOKENIZER.tokenize_text(line.strip())
-                for tkn in tokens:
-                    if tkn.contains_kanji():
-                        vocabs = Vocabulary.objects.update_or_create_from_token(tkn)
-                        for vocab in vocabs:
-                            UserFlashCard.objects.get_or_create(
-                                owner=self.notebook.owner, vocabulary=vocab
-                            )
-                        vocabularies += vocabs
-                html = [tkn.as_html() for tkn in tokens]
-                html_lines.append("".join(html))
-        self.html = "<br>".join(html_lines)
+                self.write_append(line.strip())
         self.save()
-        self.vocabularies.set(vocabularies)
 
     class Meta:
         constraints = [
