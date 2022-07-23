@@ -5,7 +5,7 @@ Jidou-Hikki Django Implementation
 Jidou Hikki (自動 筆記, lit. "Automatic Writing") is a web-based Japanese-Language learning tool for automatically taking notes of vocabularies found in a text.
 
 # Usage
-1. Install dependencies using `poetry install -vvv` or `pip install -e .`.
+1. Install dependencies using `poetry install -vvv` or `pip install -e .`. If you got a ModuleNotFoundError for _lzma when installing jamdict, read this [thread](https://github.com/ultralytics/yolov5/issues/1298) for the fix.
 2. Run `python manage.py makemigrations`.
 3. Run `python manage.py migrate`.
 4. Run `python manage.py runserver localhost:8000`.

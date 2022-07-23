@@ -1,16 +1,24 @@
 asgiref==3.3.4; python_version >= "3.6"
+certifi==2022.6.15; python_version >= "3.7" and python_version < "4"
+charset-normalizer==2.1.0; python_version >= "3.7" and python_version < "4" and python_full_version >= "3.6.0"
 chirptext==0.1.2; python_version >= "3.6"
 cython==0.29.23; python_version >= "2.6" and python_full_version < "3.0.0" or python_full_version >= "3.3.0"
 dartsclone==0.9.0
 django-model-utils==4.1.1
+django-ninja==0.19.1; python_version >= "3.6"
 django==3.2.4; python_version >= "3.6"
 gunicorn==20.1.0; python_version >= "3.5"
+idna==3.3; python_version >= "3.7" and python_version < "4"
 jaconv==0.3
 jamdict-data==1.5
 jamdict==0.1a11; python_version >= "3.6"
 puchikarui==0.1; python_version >= "3.6"
+pydantic==1.9.1; python_full_version >= "3.6.1"
 pytz==2021.1; python_version >= "3.6"
+requests==2.28.1; python_version >= "3.7" and python_version < "4"
 sortedcontainers==2.1.0
 sqlparse==0.4.1; python_version >= "3.6"
 sudachidict-full==20210608
 sudachipy==0.5.2
+typing-extensions==4.3.0; python_version >= "3.7" and python_full_version >= "3.6.1"
+urllib3==1.26.10; python_version >= "3.7" and python_full_version < "3.0.0" and python_version < "4" or python_full_version >= "3.6.0" and python_version < "4" and python_version >= "3.7"

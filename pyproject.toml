@@ -4,6 +4,9 @@ version = "0.1.0"
 description = ""
 authors = ["fariz.tumbuan <fariz.tumbuan@gmail.com>"]
 license = "MIT"
+packages = [
+    { include = "jh_server" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -15,6 +18,9 @@ SudachiDict-full = {version = "^20210608", extras = ["production"]}
 jamdict = "^0.1a11"
 jamdict-data = "^1.5"
 gunicorn = "^20.1.0"
+pydantic = "^1.9.1"
+django-ninja = "^0.19.1"
+requests = "^2.28.1"
 
 
 [build-system]
