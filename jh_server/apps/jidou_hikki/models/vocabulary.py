@@ -13,8 +13,8 @@ from model_utils.models import TimeStampedModel
 from model_utils.choices import Choices
 from django.contrib.auth import get_user_model
 
-from ..tokenizer import get_tokenizer
-from ..tokenizer.base import Token
+from jh_server.services.tokenizer import DefaultTokenizer
+from jh_server.services.tokenizer.base import Token
 
 logger = logging.getLogger("root")
 _User = get_user_model()
@@ -146,7 +146,7 @@ class VocabularyManager(models.Manager):
         if TokenIndex.objects.filter(token_id=token.word_id).exists():
             vocabs.append(TokenIndex.objects.get(token_id=token.word_id).vocabulary)
         else:
-            normalized_tokens = _TOKENIZER.normalize_token(token)
+            normalized_tokens = DefaultTokenizer.normalize_token(token)
             for normalized_tkn in normalized_tokens:
                 # Assume the first entry to be the best match
                 jmd_info = _DICTIONARY.lookup(normalized_tkn.word)
@@ -195,7 +195,7 @@ class Vocabulary(TimeStampedModel):
         return f"{self.word}"
 
     def as_token(self) -> Token:
-        token = _TOKENIZER.tokenize_text(self.word)
+        token = DefaultTokenizer.tokenize_text(self.word)
         return token[0] if token else None
 
     def as_html(self) -> str:

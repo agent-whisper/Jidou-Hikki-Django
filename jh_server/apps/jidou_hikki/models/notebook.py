@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from model_utils.models import TimeStampedModel
 
 from .vocabulary import Vocabulary, UserFlashCard
-from ..tokenizer import get_tokenizer
+from jh_server.services.tokenizer.states import DefaultTokenizer
 
 _User = get_user_model()
 
@@ -40,7 +40,7 @@ class NotePage(TimeStampedModel):
         vocabularies = []
         for line in lines:
             if line:
-                tokens = _TOKENIZER.tokenize_text(line.strip())
+                tokens = DefaultTokenizer.tokenize_text(line.strip())
                 for tkn in tokens:
                     if tkn.contains_kanji():
                         vocabs = Vocabulary.objects.update_or_create_from_token(tkn)

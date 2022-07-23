@@ -3,11 +3,13 @@ from typing import Iterable
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.shortcuts import render, get_object_or_404
-from django.contrib.auth import login
+from django.contrib.auth import login, get_user_model
 
 from .utils import demo as demo_utils
 from .forms import NotebookForm, JidouHikkiUserCreationForm, NotePageForm, AnalysisForm
-from .models import Notebook, NotePage, JidouHikkiUser, UserFlashCard
+from .models import Notebook, NotePage, UserFlashCard
+
+JidouHikkiUser = get_user_model()
 
 
 def serialize_vocab_list(vocabularies: Iterable[Vocabulary]):

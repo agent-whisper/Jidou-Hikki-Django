@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-zb!f9@0$9w4v$2f0ngwur@=_9-%s#&7-$i4j98lfzz3i&&o6qo
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["jidou-hikki-demo.herokuapp.com"]
+ALLOWED_HOSTS = ["localhost", "jidou-hikki-demo.herokuapp.com"]
 
 
 # Application definition
@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "jh_server.apps.jidou_hikki",
+    "jh_server.apps.notebook",
+    "jh_server.apps.wordcollection",
 ]
 
 MIDDLEWARE = [
@@ -127,9 +128,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_USER_MODEL = "jidou_hikki.JidouHikkiUser"
-
-TOKENIZER_CLASS = "jh_server.apps.jidou_hikki.tokenizer.sudachi.SudachiTokenizer"
+TOKENIZER_CLASS = "jh_server.services.tokenizer.sudachi.SudachiTokenizer"
 
 DEMO_ONLY = os.getenv("DEMO_ONLY", "false")
 DEMO_ONLY = DEMO_ONLY.lower() == "true"

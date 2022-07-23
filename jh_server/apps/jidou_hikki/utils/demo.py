@@ -1,18 +1,17 @@
 import logging
-from typing import Dict, Tuple, List
+from typing import Tuple, List
 
 import jamdict
 from jamdict import Jamdict
 
-from ..tokenizer import get_tokenizer
-from ..tokenizer.base import Token
-from ..tokenizer.sudachi import MODE_B
+from jh_server.services.tokenizer.states import DefaultTokenizer
+from jh_server.services.tokenizer.schemas import Token
+from jh_server.services.tokenizer.sudachi import SudachiSplitMode
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 logger.addHandler(logging.StreamHandler())
 
-_TOKENIZER = get_tokenizer()
 _DICTIONARY = Jamdict()
 
 
@@ -34,7 +33,7 @@ class DryVocabulary:
         return f"{self.word}"
 
     def as_token(self) -> Token:
-        token = _TOKENIZER.tokenize_text(self.word)
+        token = DefaultTokenizer.tokenize_text(self.word)
         return token[0] if token else None
 
     def as_html(self) -> str:
@@ -59,7 +58,7 @@ class DryVocabulary:
 def token_2_vocab(token) -> Tuple[List[DryVocabulary], List[str]]:
     vocabs = []
     failed = []
-    normalized_tokens = _TOKENIZER.normalize_token(token)
+    normalized_tokens = DefaultTokenizer.normalize_token(token)
     logger.debug(f"Normalized {token} -> {normalized_tokens}")
     for normalized_tkn in normalized_tokens:
         # Assume the first entry to be the best match
@@ -96,7 +95,9 @@ def analyze_text(text: str) -> Tuple[str, List[DryVocabulary], List[str]]:
     failed_analysis = []
     for line in lines:
         if line:
-            tokens = _TOKENIZER.tokenize_text(line.strip(), MODE_B)
+            tokens = DefaultTokenizer.tokenize_text(
+                line.strip(), SudachiSplitMode.MODE_B
+            )
             for tkn in tokens:
                 if tkn.contains_kanji():
                     vocabs, failed = token_2_vocab(tkn)
