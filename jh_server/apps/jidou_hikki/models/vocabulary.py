@@ -17,8 +17,7 @@ from ..tokenizer import get_tokenizer
 from ..tokenizer.base import Token
 
 logger = logging.getLogger("root")
-_TOKENIZER = get_tokenizer()
-_USER_MODEL = get_user_model()
+_User = get_user_model()
 _DICTIONARY = Jamdict()
 
 MASTERY = Choices("new", "learning", "acquired")
@@ -86,9 +85,7 @@ class UserFlashCardManager(models.Manager):
 class UserFlashCard(TimeStampedModel):
     objects = UserFlashCardManager()
 
-    owner = models.ForeignKey(
-        _USER_MODEL, on_delete=models.CASCADE, related_name="cards"
-    )
+    owner = models.ForeignKey(_User, on_delete=models.CASCADE, related_name="cards")
     vocabulary = models.ForeignKey("Vocabulary", on_delete=models.CASCADE)
     mastery = models.CharField(max_length=64, choices=MASTERY, default=MASTERY.new)
     last_review_time = models.DateTimeField(null=True, default=None)

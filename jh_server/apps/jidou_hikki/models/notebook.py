@@ -5,8 +5,7 @@ from model_utils.models import TimeStampedModel
 from .vocabulary import Vocabulary, UserFlashCard
 from ..tokenizer import get_tokenizer
 
-_TOKENIZER = get_tokenizer()
-_USER_MODEL = get_user_model()
+_User = get_user_model()
 
 
 class NotePageManager(models.Manager):
@@ -58,7 +57,7 @@ class NotePage(TimeStampedModel):
 
 
 class Notebook(TimeStampedModel):
-    owner = models.ForeignKey(_USER_MODEL, on_delete=models.CASCADE)
+    owner = models.ForeignKey(_User, on_delete=models.CASCADE)
     title = models.TextField()
     description = models.TextField(default="")
 
