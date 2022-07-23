@@ -15,10 +15,10 @@ from django.contrib.auth import get_user_model
 
 from jh_server.services.tokenizer import DefaultTokenizer
 from jh_server.services.tokenizer.base import Token
+from jh_server.services.dictionary import DefaultJisho
 
 logger = logging.getLogger("root")
 _User = get_user_model()
-_DICTIONARY = Jamdict()
 
 MASTERY = Choices("new", "learning", "acquired")
 
@@ -149,7 +149,7 @@ class VocabularyManager(models.Manager):
             normalized_tokens = DefaultTokenizer.normalize_token(token)
             for normalized_tkn in normalized_tokens:
                 # Assume the first entry to be the best match
-                jmd_info = _DICTIONARY.lookup(normalized_tkn.word)
+                jmd_info = DefaultJisho.lookup_token(normalized_tkn)
                 if len(jmd_info.entries) > 0:
                     # Some tokens may be a set of expressions, and not available in
                     # JMDict. Example cases:
@@ -205,7 +205,7 @@ class Vocabulary(TimeStampedModel):
     @property
     def jmdict(self) -> jamdict.util.LookupResult:
         if not self._jmd_lookup:
-            self._jmd_lookup = _DICTIONARY.lookup(f"id#{self.dict_id}")
+            self._jmd_lookup = DefaultJisho.lookup(f"id#{self.dict_id}")
         return self._jmd_lookup
 
     def as_text(self) -> str:

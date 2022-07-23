@@ -4,15 +4,16 @@ from typing import Tuple, List
 import jamdict
 from jamdict import Jamdict
 
-from jh_server.services.tokenizer.states import DefaultTokenizer
+from jh_server.services.tokenizer import DefaultTokenizer
 from jh_server.services.tokenizer.schemas import Token
 from jh_server.services.tokenizer.sudachi import SudachiSplitMode
+from jh_server.services.dictionary import DefaultJisho
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 logger.addHandler(logging.StreamHandler())
 
-_DICTIONARY = Jamdict()
+DefaultJisho = DefaultJisho
 
 
 class DryVocabulary:
@@ -43,7 +44,7 @@ class DryVocabulary:
     @property
     def jmdict(self) -> jamdict.util.LookupResult:
         if not self._jmd_lookup:
-            self._jmd_lookup = _DICTIONARY.lookup(f"id#{self.dict_id}")
+            self._jmd_lookup = DefaultJisho.lookup(f"id#{self.dict_id}")
         return self._jmd_lookup
 
     def as_text(self) -> str:
@@ -62,7 +63,7 @@ def token_2_vocab(token) -> Tuple[List[DryVocabulary], List[str]]:
     logger.debug(f"Normalized {token} -> {normalized_tokens}")
     for normalized_tkn in normalized_tokens:
         # Assume the first entry to be the best match
-        jmd_info = _DICTIONARY.lookup(normalized_tkn.word)
+        jmd_info = DefaultJisho.lookup_token(normalized_tkn)
         if len(jmd_info.entries) > 0:
             # Some tokens may be a set of expressions, and not available in
             # JMDict. Example cases:
