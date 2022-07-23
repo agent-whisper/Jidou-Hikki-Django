@@ -1,42 +1,17 @@
-"""jh_server URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-from django.contrib import admin
+from ninja import NinjaAPI
 from django.urls import path
-from django.conf.urls.static import static
 from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib import admin
 
-from jh_server.apps.jidou_hikki import views as jh_views
+from jh_server.apps.notebook.api import router as notebook_router
 
-if settings.DEMO_ONLY:
-    urlpatterns = [
-        path("", jh_views.demo, name="demo_index"),
-        path("demo/", jh_views.demo, name="demo"),
-    ]
-else:
-    urlpatterns = [
-        path("admin/", admin.site.urls),
-        path("", jh_views.index, name="index"),
-        path("accounts/register/", jh_views.register_view, name="register"),
-        path("notebooks/", jh_views.new_notebook, name="notebooks"),
-        path("home/", jh_views.home, name="home"),
-        path("notebooks/<int:book_id>", jh_views.notebook_content, name="book_content"),
-        path("notebooks/<int:book_id>/add_page/", jh_views.new_page, name="new_page"),
-        path("pages/<int:page_id>", jh_views.page, name="page"),
-        path("vocab/", jh_views.vocabs, name="vocab"),
-        path("demo/", jh_views.demo, name="demo"),
-    ]
+api = NinjaAPI()
+api.add_router("/notebooks", notebook_router)
+
+urlpatterns = [
+    path("api/", api.urls),
+    path("admin/", admin.site.urls),
+]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
