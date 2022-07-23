@@ -10,7 +10,7 @@ Jidou Hikki (自動 筆記, lit. "Automatic Writing") is a web-based Japanese-La
 3. Run `python manage.py migrate`.
 4. Run `python manage.py runserver localhost:8000`.
 5. Open `localhost:8000` in the browser to start using the app.
-6. Optionally, you can run the server on your WIFI interface instead and open the app from your phone's or table's browser. You need to add the IP address in the `ALLOWED_HOSTS` variable inside `jh_server/settings.py`
+6. Optionally, you can run the server on your WIFI interface instead and open the app from your phone's or table's browser. You need to add the IP address in the `ALLOWED_HOSTS` variable inside `src/settings.py`
 
 # Features
 1. Automatic furigana generation.

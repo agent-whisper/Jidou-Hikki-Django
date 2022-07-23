@@ -5,7 +5,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 
-from jh_server.services.tokenizer.schemas import Token
+from src.services.tokenizer.schemas import Token
 
 _User = get_user_model()
 

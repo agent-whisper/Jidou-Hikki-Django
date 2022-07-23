@@ -3,8 +3,8 @@ from typing import List
 
 
 from .schemas import Entry
-from jh_server.services.tokenizer.base import Token, Tokenizer
-from jh_server.services.tokenizer.sudachi import SudachiTokenizer
+from src.services.tokenizer.base import Token, Tokenizer
+from src.services.tokenizer.sudachi import SudachiTokenizer
 
 
 class AbstractJisho(ABC):

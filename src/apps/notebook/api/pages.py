@@ -4,7 +4,7 @@ from ninja import Router, ModelSchema, Schema
 from ninja.pagination import paginate
 from django.shortcuts import get_object_or_404, get_list_or_404
 
-from jh_server.apps.notebook.models import Page, Notebook
+from src.apps.notebook.models import Page, Notebook
 
 
 # Schema definitions

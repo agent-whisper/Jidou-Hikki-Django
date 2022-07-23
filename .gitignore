@@ -3,8 +3,8 @@
 tmp
 
 # Ignore migration files
-jh_server/apps/*/migrations/*.py
-!jh_server/apps/*/migrations/__init__.py
+src/apps/*/migrations/*.py
+!src/apps/*/migrations/__init__.py
 
 # Ignore static folder
 staticfiles/*

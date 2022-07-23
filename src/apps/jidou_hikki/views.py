@@ -1,4 +1,4 @@
-from jh_server.apps.jidou_hikki.models.vocabulary import Vocabulary
+from src.apps.jidou_hikki.models.vocabulary import Vocabulary
 from typing import Iterable
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader

@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404, get_list_or_404
 
 from .pages import router as pages_router
-from jh_server.apps.notebook.models import Notebook
+from src.apps.notebook.models import Notebook
 
 # Schema definitions
 _User = get_user_model()

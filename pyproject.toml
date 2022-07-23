@@ -5,7 +5,7 @@ description = ""
 authors = ["fariz.tumbuan <fariz.tumbuan@gmail.com>"]
 license = "MIT"
 packages = [
-    { include = "jh_server" }
+    { include = "src" }
 ]
 
 [tool.poetry.dependencies]

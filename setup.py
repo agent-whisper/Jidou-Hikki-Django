@@ -20,15 +20,15 @@ setup(
     author_email='fariz.tumbuan@gmail.com',
     license='MIT',
     packages=[
-        'jh_server', 'jh_server.apps.jidou_hikki',
-        'jh_server.apps.jidou_hikki.migrations',
-        'jh_server.apps.jidou_hikki.models',
-        'jh_server.apps.jidou_hikki.tokenizer',
-        'jh_server.apps.jidou_hikki.utils'
+        'src', 'src.apps.jidou_hikki',
+        'src.apps.jidou_hikki.migrations',
+        'src.apps.jidou_hikki.models',
+        'src.apps.jidou_hikki.tokenizer',
+        'src.apps.jidou_hikki.utils'
     ],
     package_dir={"": "."},
     package_data={
-        "jh_server.apps.jidou_hikki": ["templates/jidou_hikki/*.html"]
+        "src.apps.jidou_hikki": ["templates/jidou_hikki/*.html"]
     },
     install_requires=[
         'django==3.*,>=3.2.4', 'django-model-utils==4.*,>=4.1.1',

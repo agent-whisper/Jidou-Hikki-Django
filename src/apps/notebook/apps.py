@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class WordcollectionConfig(AppConfig):
+class NotebookConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'jh_server.apps.wordcollection'
+    name = 'src.apps.notebook'

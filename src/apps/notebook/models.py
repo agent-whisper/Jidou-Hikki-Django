@@ -4,10 +4,10 @@ from django.db import models, transaction
 from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth import get_user_model
 
-from jh_server.services.logging import logger
-from jh_server.services.tokenizer import DefaultTokenizer
-from jh_server.services.tokenizer.schemas import PartOfSpeech
-from jh_server.apps.wordcollection.models import Word, WordCollection
+from src.services.logging import logger
+from src.services.tokenizer import DefaultTokenizer
+from src.services.tokenizer.schemas import PartOfSpeech
+from src.apps.wordcollection.models import Word, WordCollection
 
 _User = get_user_model()
 

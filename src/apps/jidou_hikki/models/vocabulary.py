@@ -13,9 +13,9 @@ from model_utils.models import TimeStampedModel
 from model_utils.choices import Choices
 from django.contrib.auth import get_user_model
 
-from jh_server.services.tokenizer import DefaultTokenizer
-from jh_server.services.tokenizer.base import Token
-from jh_server.services.dictionary import DefaultJisho
+from src.services.tokenizer import DefaultTokenizer
+from src.services.tokenizer.base import Token
+from src.services.dictionary import DefaultJisho
 
 logger = logging.getLogger("root")
 _User = get_user_model()

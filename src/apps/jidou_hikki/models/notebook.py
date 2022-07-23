@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from model_utils.models import TimeStampedModel
 
 from .vocabulary import Vocabulary, UserFlashCard
-from jh_server.services.tokenizer.states import DefaultTokenizer
+from src.services.tokenizer.states import DefaultTokenizer
 
 _User = get_user_model()
 

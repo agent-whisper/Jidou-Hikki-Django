@@ -4,10 +4,10 @@ from typing import Tuple, List
 import jamdict
 from jamdict import Jamdict
 
-from jh_server.services.tokenizer import DefaultTokenizer
-from jh_server.services.tokenizer.schemas import Token
-from jh_server.services.tokenizer.sudachi import SudachiSplitMode
-from jh_server.services.dictionary import DefaultJisho
+from src.services.tokenizer import DefaultTokenizer
+from src.services.tokenizer.schemas import Token
+from src.services.tokenizer.sudachi import SudachiSplitMode
+from src.services.dictionary import DefaultJisho
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
