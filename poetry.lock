@@ -73,6 +73,17 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-cors-headers"
+version = "3.13.0"
+description = "django-cors-headers is a Django application for handling the server headers required for Cross-Origin Resource Sharing (CORS)."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+Django = ">=3.2"
+
+[[package]]
 name = "django-model-utils"
 version = "4.1.1"
 description = "Django model mixins and utilities"
@@ -262,7 +273,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "8dad2a031c63f938cd51f2066dd69545d0cb17d7d115900a930baca616dba84a"
+content-hash = "847a875a360a58b01192c6c8e737f3ee29e4192027136a1f99b9bc1b9803b51f"
 
 [metadata.files]
 asgiref = [
@@ -278,6 +289,7 @@ chirptext = []
 cython = []
 dartsclone = []
 django = []
+django-cors-headers = []
 django-model-utils = [
     {file = "django-model-utils-4.1.1.tar.gz", hash = "sha256:eb5dd05ef7d7ce6bc79cae54ea7c4a221f6f81e2aad7722933aee66489e7264b"},
     {file = "django_model_utils-4.1.1-py3-none-any.whl", hash = "sha256:ef7c440024e797796a3811432abdd2be8b5225ae64ef346f8bfc6de7d8e5d73c"},

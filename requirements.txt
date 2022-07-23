@@ -4,6 +4,7 @@ charset-normalizer==2.1.0; python_version >= "3.7" and python_version < "4" and 
 chirptext==0.1.2; python_version >= "3.6"
 cython==0.29.23; python_version >= "2.6" and python_full_version < "3.0.0" or python_full_version >= "3.3.0"
 dartsclone==0.9.0
+django-cors-headers==3.13.0; python_version >= "3.7"
 django-model-utils==4.1.1
 django-ninja==0.19.1; python_version >= "3.6"
 django==3.2.4; python_version >= "3.6"
