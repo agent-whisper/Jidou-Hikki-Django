@@ -1,8 +1,8 @@
 from typing import Dict, List
 
 from django.db import models, transaction
-from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth import get_user_model
+from pydantic import BaseModel
 
 from src.services.logging import logger
 from src.services.tokenizer import DefaultTokenizer
@@ -10,6 +10,14 @@ from src.services.tokenizer.schemas import PartOfSpeech
 from src.apps.wordcollection.models import Word, WordCollection
 
 _User = get_user_model()
+
+
+class WordToken(BaseModel):
+    word: str
+    word_id: str
+
+    def __hash__(self):
+        return hash(tuple(self.word_id))
 
 
 class NotebookManager(models.Manager):
@@ -49,6 +57,13 @@ class Notebook(models.Model):
         self.save()
         self.register_words()
 
+    @transaction.atomic
+    def redo_parsing(self):
+        self.parse_title(save=False)
+        self.parse_content(save=False)
+        self.save()
+        self.register_words()
+
     def parse_title(self, *, save=True):
         html_lines = []
         word_tokens = []
@@ -60,7 +75,12 @@ class Notebook(models.Model):
                     pos = PartOfSpeech(tkn.part_of_speech)
                     if pos in PartOfSpeech.noteworthy_pos():
                         logger.debug(f"Including token {tkn} to word list.")
-                        word_tokens.append(tkn.normalized_form)
+                        word_tokens.append(
+                            {
+                                "word": tkn.normalized_form,
+                                "word_id": tkn.word_id,
+                            }
+                        )
                     else:
                         logger.debug(f"Skipping token {tkn} from word list")
                 except ValueError:
@@ -85,7 +105,12 @@ class Notebook(models.Model):
                         pos = PartOfSpeech(tkn.part_of_speech)
                         if pos in PartOfSpeech.noteworthy_pos():
                             logger.debug(f"Including token {tkn} to word list.")
-                            word_tokens.append(tkn.normalized_form)
+                            word_tokens.append(
+                                {
+                                    "word": tkn.normalized_form,
+                                    "word_id": tkn.word_id,
+                                }
+                            )
                         else:
                             logger.debug(f"Skipping token {tkn} from word list")
                     except ValueError:
@@ -96,15 +121,15 @@ class Notebook(models.Model):
         if save:
             self.save()
 
-    def add_word_list(self, words: List[str]):
-        current_state = set(self.word_list)
-        additional_state = set(words)
+    def add_word_list(self, words: List[Dict]):
+        current_state = set([WordToken(**wt) for wt in self.word_list])
+        additional_state = set([WordToken(**wt) for wt in words])
         new_state = current_state.union(additional_state)
-        self.word_list = list(new_state)
+        self.word_list = [wt.dict() for wt in new_state]
 
     @transaction.atomic
     def register_words(self):
         for word in self.word_list:
-            tokens = DefaultTokenizer.tokenize_text(word)
+            tokens = DefaultTokenizer.tokenize_text(word["word"])
             for tkn in tokens:
                 WordCollection.objects.add_token(self.owner, tkn)
