@@ -67,3 +67,23 @@ def get_profile(request):
 def logout_endpoint(request):
     logout(request)
     return 204, None
+
+
+@router.get("/create-demo-users", response={204: None, 201: None})
+def create_demo_users(request):
+    for username, email, first_name, last_name, password in [
+        ("fariz.tumbuan", "fariz.tumbuan@gmail.com", "Fariz", "Tumbuan", "P@ssw0rd"),
+        ("user1", "user1@gmail.com", "User", "One", "P@ssw0rd"),
+        ("user2", "user2@gmail.com", "User", "Two", "P@ssw0rd"),
+        ("user3", "user3@gmail.com", "User", "Three", "P@ssw0rd"),
+    ]:
+        user, created = _User.objects.get_or_create(
+            username=username,
+            defaults={"email": email, "first_name": first_name, "last_name": last_name},
+        )
+        user.set_password(password)
+        user.save()
+    if created:
+        return 201, None
+    else:
+        return 204, None
