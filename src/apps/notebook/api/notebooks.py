@@ -5,7 +5,6 @@ from ninja.pagination import paginate
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404, get_list_or_404
 
-from .pages import router as pages_router
 from src.apps.notebook.models import Notebook
 
 # Schema definitions
@@ -23,7 +22,7 @@ class OwnerSchema(ModelSchema):
         ]
 
 
-class NotebookSchema(ModelSchema):
+class NotebookMinSchema(ModelSchema):
     owner: OwnerSchema
 
     class Config:
@@ -38,61 +37,72 @@ class NotebookSchema(ModelSchema):
         ]
 
 
+class NotebookSchema(ModelSchema):
+    owner: OwnerSchema
+
+    class Config:
+        model = Notebook
+        model_fields = [
+            "id",
+            "owner",
+            "title",
+            "title_html",
+            "content",
+            "content_html",
+            "word_list",
+            "description",
+            "created_at",
+            "modified_at",
+        ]
+
+
 class CreateNotebookSchema(Schema):
     title: str
     description: str
+    content: str
 
 
 class UpdateNotebookSchema(Schema):
     title: str = None
     description: str = None
+    content: str = None
 
 
 # Routes
 router = Router()
-router.add_router("", pages_router)
 
 
-@router.get("/", response=List[NotebookSchema])
+@router.get("/", response=List[NotebookMinSchema])
 @paginate
 def list_notebooks(request):
-    # TODO: Use user from authorization
-    owner = _User.objects.first()
-    return Notebook.objects.filter(owner=owner)
+    return Notebook.objects.filter(owner=request.user)
 
 
 @router.get("/{id}", response=NotebookSchema)
 def get_notebook(request, id: int):
-    # TODO: Use user from authorization
-    owner = _User.objects.first()
-    return get_object_or_404(Notebook, owner=owner)
+    return get_object_or_404(Notebook, owner=request.user, id=id)
 
 
 @router.post("/", response=NotebookSchema)
 def create_notebook(request, data: CreateNotebookSchema):
-    # TODO: Use user from authorization
-    owner = _User.objects.first()
-    notebook = Notebook.objects.create(
-        owner=owner, title=data.title, description=data.description
+    notebook = Notebook.objects.create_notes(
+        owner=request.user,
+        title=data.title,
+        description=data.description,
+        content=data.content,
     )
     return notebook
 
 
 @router.api_operation(["PUT", "PATCH"], "/{id}", response=NotebookSchema)
 def update_notebook(request, id: int, data: UpdateNotebookSchema):
-    # TODO: Use user from authorization
-    owner = _User.objects.first()
-    notebook = get_object_or_404(Notebook, owner=owner, id=id)
-    for key, val in data.dict().items():
-        if val is not None:
-            setattr(notebook, key, val)
+    notebook = get_object_or_404(Notebook, owner=request.user, id=id)
+    notebook.update_notes(data.dict())
     return notebook
 
 
 @router.delete("/{id}", response={204: None})
 def delete_notebook(request, id: int):
-    # TODO: Use user from authorization
-    owner = _User.objects.first()
-    notebook = get_object_or_404(Notebook, owner=owner, id=id)
+    notebook = get_object_or_404(Notebook, owner=request.user, id=id)
     notebook.delete()
     return 204, None

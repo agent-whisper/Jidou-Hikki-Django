@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 
 from django.db import models, transaction
 from django.core.serializers.json import DjangoJSONEncoder
@@ -12,77 +12,75 @@ from src.apps.wordcollection.models import Word, WordCollection
 _User = get_user_model()
 
 
+class NotebookManager(models.Manager):
+    @transaction.atomic
+    def create_notes(self, **kwargs):
+        notes = self.create(**kwargs)
+        notes.parse_title(save=False)
+        notes.parse_content(save=False)
+        notes.save()
+        notes.register_words()
+        return notes
+
+
 class Notebook(models.Model):
+    objects: NotebookManager = NotebookManager()
+
     owner = models.ForeignKey(_User, on_delete=models.CASCADE)
     title = models.CharField(max_length=256)
+    title_html = models.TextField(default="")
     description = models.CharField(max_length=512, default="")
+    content = models.TextField()
+    content_html = models.TextField(default="")
+    word_list = models.JSONField(default=list)
     words = models.ManyToManyField(Word)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
     @transaction.atomic
-    def write_page(self, text: str) -> "Page":
-        page = Page.objects.create(
-            notebook=self,
-            text=text,
-        )
-        if self.pages.count() > 1:
-            last_ordering_val = self.pages.order_by("-ordering").first().ordering
-            page.ordering = last_ordering_val + 100
-        page.parse_text(save=False)
-        self.register_page_words(page)
-        page.save()
-        return page
-
-    @transaction.atomic
-    def update_page(self, page: "Page", data: Dict) -> "Page":
-        if page.notebook != self:
-            raise ValueError("Cannot page from other notebook.")
+    def update_notes(self, data: Dict):
         for key, val in data.items():
             if val is not None:
-                setattr(page, key, val)
-        page.parse_text(save=True)
-        self.register_page_words(page)
-        return page
+                setattr(self, key, val)
+        if "title" in data:
+            self.parse_title(save=False)
+        if "content" in data:
+            self.parse_content(save=False)
+        self.save()
+        self.register_words()
 
-    @transaction.atomic
-    def register_all_words(self):
-        for page in self.pages:
-            for word in page.word_list:
-                tokens = DefaultTokenizer.tokenize_text(word)
-                for tkn in tokens:
-                    WordCollection.objects.add_token(self.owner, tkn)
+    def parse_title(self, *, save=True):
+        html_lines = []
+        word_tokens = []
+        if self.title:
+            html = []
+            for tkn in DefaultTokenizer.tokenize_text(self.title):
+                html.append(tkn.to_html())
+                try:
+                    pos = PartOfSpeech(tkn.part_of_speech)
+                    if pos in PartOfSpeech.noteworthy_pos():
+                        logger.debug(f"Including token {tkn} to word list.")
+                        word_tokens.append(tkn.normalized_form)
+                    else:
+                        logger.debug(f"Skipping token {tkn} from word list")
+                except ValueError:
+                    logger.warning(f"Unknown part-of-speech found: {tkn}")
+            html_lines.append("".join(html))
+        self.content_html = "<br>".join(html_lines)
+        self.add_word_list(word_tokens)
+        if save:
+            self.save()
 
-    @transaction.atomic
-    def register_page_words(self, page: "Page"):
-        for word in page.word_list:
-            tokens = DefaultTokenizer.tokenize_text(word)
-            for tkn in tokens:
-                WordCollection.objects.add_token(self.owner, tkn)
-
-
-class Page(models.Model):
-    text = models.TextField()
-    html = models.TextField()
-    notebook = models.ForeignKey(
-        Notebook, on_delete=models.CASCADE, related_name="pages"
-    )
-    word_list = models.JSONField(default=list, encoder=DjangoJSONEncoder)
-    ordering = models.IntegerField(default=1)
-    created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now=True)
-
-    _included_pos = []
-
-    def parse_text(self, *, save=True):
-        lines = self.text.split("\n")
+    def parse_content(self, *, save=True):
+        lines = self.content.split("\n")
         html_lines = []
         word_tokens = []
         for line in lines:
             if line:
                 tokens = DefaultTokenizer.tokenize_text(line.strip())
+                html = []
                 for tkn in tokens:
-                    html = [tkn.to_html() for tkn in tokens]
+                    html.append(tkn.to_html())
                     try:
                         pos = PartOfSpeech(tkn.part_of_speech)
                         if pos in PartOfSpeech.noteworthy_pos():
@@ -92,9 +90,21 @@ class Page(models.Model):
                             logger.debug(f"Skipping token {tkn} from word list")
                     except ValueError:
                         logger.warning(f"Unknown part-of-speech found: {tkn}")
-                        print("")
                 html_lines.append("".join(html))
-        self.html = "<br>".join(html_lines)
-        self.word_list = word_tokens
+        self.content_html = "<br>".join(html_lines)
+        self.add_word_list(word_tokens)
         if save:
             self.save()
+
+    def add_word_list(self, words: List[str]):
+        current_state = set(self.word_list)
+        additional_state = set(words)
+        new_state = current_state.union(additional_state)
+        self.word_list = list(new_state)
+
+    @transaction.atomic
+    def register_words(self):
+        for word in self.word_list:
+            tokens = DefaultTokenizer.tokenize_text(word)
+            for tkn in tokens:
+                WordCollection.objects.add_token(self.owner, tkn)

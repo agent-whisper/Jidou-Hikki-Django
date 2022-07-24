@@ -29,7 +29,7 @@ class WordCollection(models.Model):
     objects: WordCollectionManager = WordCollectionManager()
 
     def __repr__(self) -> str:
-        return f"<UserWordBank: {self.user.username}>"
+        return f"<WordCollection: {self.user.username} - {self.word}>"
 
     user = models.ForeignKey(_User, on_delete=models.CASCADE)
     word = models.ForeignKey("Word", on_delete=models.CASCADE)
