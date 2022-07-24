@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "src.apps.notebook",
     "src.apps.wordcollection",
+    "src.apps.common",
     "corsheaders",
 ]
 
@@ -55,6 +56,8 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+CSRF_HEADER_NAME = "HTTP_X_XSRF_TOKEN"
+CSRF_COOKIE_NAME = "XSRF-TOKEN"
 
 ROOT_URLCONF = "src.urls"
 
