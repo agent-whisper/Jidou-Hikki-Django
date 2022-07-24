@@ -1,1 +1,2 @@
-web: gunicorn src.wsgi --workers 4 --env DEMO_ONLY=true
+release: python manage.py migrate --no-input
+web: gunicorn src.wsgi --workers 4
