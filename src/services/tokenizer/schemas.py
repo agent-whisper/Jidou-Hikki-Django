@@ -19,10 +19,18 @@ class PartOfSpeech(str, Enum):
     HOJOKIGOU = "補助記号"  # number and punctuations
     KANDOUSHI = "感動詞"  # interjection
     SETSUBISHI = "接尾辞"  # suffix
+    SETSUZOKUSHI = "接続詞"  # conjunction
 
     @classmethod
     def noteworthy_pos(cls):
-        return [cls.DOUSHI, cls.MEISHI, cls.DAIMEISHI, cls.KEIJOUSHI, cls.KEIYOUSHI]
+        return [
+            cls.DOUSHI,
+            cls.MEISHI,
+            cls.DAIMEISHI,
+            cls.KEIJOUSHI,
+            cls.KEIYOUSHI,
+            cls.SETSUZOKUSHI,
+        ]
 
 
 class Token(BaseModel):
