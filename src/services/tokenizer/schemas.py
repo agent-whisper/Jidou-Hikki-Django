@@ -33,6 +33,10 @@ class PartOfSpeech(str, Enum):
             cls.SETSUZOKUSHI,
         ]
 
+    @classmethod
+    def is_noteworthy(cls, pos_val: str):
+        return cls(pos_val) in cls.noteworthy_pos()
+
 
 class Token(BaseModel):
     def __repr__(self):
