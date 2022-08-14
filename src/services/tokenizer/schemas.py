@@ -18,6 +18,7 @@ class PartOfSpeech(str, Enum):
     RENTAISHI = "連体詞"  # pre-noun adjectival
     HOJOKIGOU = "補助記号"  # number and punctuations
     KANDOUSHI = "感動詞"  # interjection
+    SETTOUJI = "接頭辞"  # prefix
     SETSUBISHI = "接尾辞"  # suffix
     SETSUZOKUSHI = "接続詞"  # conjunction
 
