@@ -106,8 +106,8 @@ class Notebook(models.Model):
                 tokens = DefaultTokenizer.tokenize_text(line.strip())
                 html = []
                 for tkn in tokens:
+                    html.append(tkn.to_html())
                     if self._should_save_token(tkn):
-                        html.append(tkn.to_html())
                         if tkn.word_id not in word_token_map:
                             word_token_map[tkn.word_id] = {
                                 "word": tkn.normalized_form,
