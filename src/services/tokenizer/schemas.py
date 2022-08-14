@@ -51,6 +51,10 @@ class Token(BaseModel):
     okurigana: str = ""
 
     @property
+    def only_contains_japanese_chars(self):
+        return utils.check_only_japanese_chars(self.word)
+
+    @property
     def contains_kanji(self):
         return utils.check_contains_kanji(self.word)
 

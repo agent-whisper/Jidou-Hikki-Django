@@ -6,6 +6,10 @@ def check_contains_kanji(word: str) -> bool:
     return any([is_kanji(ch) for ch in word])
 
 
+def check_only_japanese_chars(word: str) -> bool:
+    return all([is_japanese_char(ch) for ch in word])
+
+
 def to_hiragana(word: str) -> str:
     return jaconv.kata2hira(word)
 
@@ -20,6 +24,10 @@ def write_normal_html(word: str):
 
 def write_kanji_html(word_id: str, kanji: str, furigana: str, okurigana: str) -> str:
     return f"<span><ruby data-word-id={word_id}><rb>{kanji}</rb><rp>(</rp><rt>{furigana}</rt><rp>)</rp></ruby>{okurigana}</span>"
+
+
+def is_japanese_char(ch) -> bool:
+    return any([is_kanji(ch), is_hiragana(ch), is_katakana(ch)])
 
 
 def is_kanji(ch) -> bool:
